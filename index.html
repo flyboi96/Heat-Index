@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Heat Index</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --card-2: #1f2937;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #f59e0b;
+      --good: #22c55e;
+      --border: #334155;
+      --danger: #ef4444;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(180deg, #0b1220 0%, #111827 100%);
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .hero {
+      background: rgba(17, 24, 39, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    .title {
+      margin: 0 0 6px;
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      background: rgba(17, 24, 39, 0.96);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 1.05rem;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card-2);
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--accent);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #111827;
+    }
+
+    .btn-secondary {
+      background: var(--card-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .results {
+      display: grid;
+      gap: 10px;
+    }
+
+    .result-item {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .result-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .result-title {
+      font-weight: 700;
+    }
+
+    .result-score {
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .bar {
+      height: 10px;
+      background: #0b1220;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+      transition: width 0.25s ease;
+    }
+
+    .summary {
+      text-align: center;
+      padding: 20px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(245,158,11,0.12), rgba(245,158,11,0.04));
+      border: 1px solid rgba(245,158,11,0.3);
+    }
+
+    .summary .total {
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin: 0;
+      color: #fbbf24;
+    }
+
+    .summary .label {
+      margin-top: 4px;
+      color: var(--muted);
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 8px 6px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .row {
+        grid-template-columns: 1fr;
+      }
+
+      .title {
+        font-size: 1.55rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1 class="title">Heat Index</h1>
+      <p class="subtitle">Track strength, conditioning, and consistency. Log PRs anytime. Build your score. Compete in the heat.</p>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Athlete Inputs</h2>
+
+        <div class="row">
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" type="text" placeholder="Alex" />
+          </div>
+          <div class="field">
+            <label for="sex">Sex</label>
+            <select id="sex">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="bodyweight">Bodyweight (lb)</label>
+            <input id="bodyweight" type="number" min="1" step="0.1" placeholder="155" />
+          </div>
+          <div class="field">
+            <label for="consistency">Consistency Points (0-100)</label>
+            <input id="consistency" type="number" min="0" max="100" step="1" value="0" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="squat">Squat 3RM (lb)</label>
+            <input id="squat" type="number" min="0" step="1" placeholder="275" />
+          </div>
+          <div class="field">
+            <label for="pullups">Pull-ups (strict reps)</label>
+            <input id="pullups" type="number" min="0" step="1" placeholder="12" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="pullupBand">Pull-up Assist</label>
+            <select id="pullupBand">
+              <option value="strict">Strict</option>
+              <option value="light">Light Band</option>
+              <option value="medium">Medium Band</option>
+              <option value="heavy">Heavy Band</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="carry">Farmer Hold Time (sec)</label>
+            <input id="carry" type="number" min="0" step="1" placeholder="75" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="mileMin">1-Mile Time</label>
+            <div class="row">
+              <div class="field" style="margin-bottom:0;">
+                <input id="mileMin" type="number" min="0" step="1" placeholder="6" />
+                <label class="small">Minutes</label>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <input id="mileSec" type="number" min="0" max="59" step="1" placeholder="30" />
+                <label class="small">Seconds</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" onclick="calculateScore()">Calculate Score</button>
+          <button class="btn-secondary" onclick="saveToLocal()">Save My Inputs</button>
+          <button class="btn-secondary" onclick="loadFromLocal()">Load Saved Inputs</button>
+          <button class="btn-secondary" onclick="clearForm()">Clear</button>
+        </div>
+
+        <p class="footer-note">
+          Event weights are all 20 percent. Scores are interpolated from Beginner to Elite and continue above Elite.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>Score Summary</h2>
+
+        <div class="summary">
+          <p class="total" id="totalScore">0.0</p>
+          <div class="label">Total Heat Index Score</div>
+        </div>
+
+        <div class="results" style="margin-top:14px;">
+          <div class="result-item">
+            <div class="result-top">
+              <div class="result-title">Squat</div>
+              <div class="result-score" id="squatScore">0.0</div>
+            </div>
+            <div class="bar"><div class="bar-fill" id="squatBar"></div></div>
+            <div class="small" id="squatMeta">Enter squat and bodyweight</div>
+          </div>
+
+          <div class="result-item">
+            <div class="result-top">
+              <div class="result-title">Pull-ups</div>
+              <div class="result-score" id="pullupScore">0.0</div>
+            </div>
+            <div class="bar"><div class="bar-fill" id="pullupBar"></div></div>
+            <div class="small" id="pullupMeta">Enter pull-up result</div>
+          </div>
+
+          <div class="result-item">
+            <div class="result-top">
+              <div class="result-title">Farmer Hold</div>
+              <div class="result-score" id="carryScore">0.0</div>
+            </div>
+            <div class="bar"><div class="bar-fill" id="carryBar"></div></div>
+            <div class="small" id="carryMeta">Men: 2 x 53 lb, Women: 2 x 35 lb</div>
+          </div>
+
+          <div class="result-item">
+            <div class="result-top">
+              <div class="result-title">1-Mile Run</div>
+              <div class="result-score" id="mileScore">0.0</div>
+            </div>
+            <div class="bar"><div class="bar-fill" id="mileBar"></div></div>
+            <div class="small" id="mileMeta">Enter mile time</div>
+          </div>
+
+          <div class="result-item">
+            <div class="result-top">
+              <div class="result-title">Consistency</div>
+              <div class="result-score" id="consistencyScore">0.0</div>
+            </div>
+            <div class="bar"><div class="bar-fill" id="consistencyBar"></div></div>
+            <div class="small" id="consistencyMeta">Manual input from 0 to 100</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Tier Tables</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Sex</th>
+                <th>Beginner</th>
+                <th>Novice</th>
+                <th>Intermediate</th>
+                <th>Advanced</th>
+                <th>Elite</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Squat 3RM / BW</td>
+                <td>Male</td>
+                <td>0.85</td>
+                <td>1.15</td>
+                <td>1.45</td>
+                <td>1.80</td>
+                <td>2.25</td>
+              </tr>
+              <tr>
+                <td>Squat 3RM / BW</td>
+                <td>Female</td>
+                <td>0.65</td>
+                <td>0.95</td>
+                <td>1.25</td>
+                <td>1.55</td>
+                <td>1.90</td>
+              </tr>
+              <tr>
+                <td>Pull-ups</td>
+                <td>Male</td>
+                <td>3</td>
+                <td>8</td>
+                <td>13</td>
+                <td>18</td>
+                <td>25</td>
+              </tr>
+              <tr>
+                <td>Pull-ups</td>
+                <td>Female</td>
+                <td>1</td>
+                <td>4</td>
+                <td>8</td>
+                <td>12</td>
+                <td>18</td>
+              </tr>
+              <tr>
+                <td>Farmer Hold (sec)</td>
+                <td>Male</td>
+                <td>25</td>
+                <td>50</td>
+                <td>80</td>
+                <td>120</td>
+                <td>180</td>
+              </tr>
+              <tr>
+                <td>Farmer Hold (sec)</td>
+                <td>Female</td>
+                <td>25</td>
+                <td>50</td>
+                <td>85</td>
+                <td>130</td>
+                <td>190</td>
+              </tr>
+              <tr>
+                <td>1-Mile Run</td>
+                <td>Male</td>
+                <td>8:45</td>
+                <td>7:40</td>
+                <td>6:40</td>
+                <td>5:50</td>
+                <td>5:00</td>
+              </tr>
+              <tr>
+                <td>1-Mile Run</td>
+                <td>Female</td>
+                <td>10:00</td>
+                <td>8:45</td>
+                <td>7:40</td>
+                <td>6:40</td>
+                <td>5:40</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const POINT_ANCHORS = [20, 40, 60, 80, 100];
+
+    const TABLES = {
+      male: {
+        squatRatio: [0.85, 1.15, 1.45, 1.80, 2.25],
+        pullups: [3, 8, 13, 18, 25],
+        carrySec: [25, 50, 80, 120, 180],
+        mileSec: [525, 460, 400, 350, 300]
+      },
+      female: {
+        squatRatio: [0.65, 0.95, 1.25, 1.55, 1.90],
+        pullups: [1, 4, 8, 12, 18],
+        carrySec: [25, 50, 85, 130, 190],
+        mileSec: [600, 525, 460, 400, 340]
+      }
+    };
+
+    const BAND_MULTIPLIERS = {
+      strict: 1.0,
+      light: 0.8,
+      medium: 0.6,
+      heavy: 0.4
+    };
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function round1(value) {
+      return Math.round(value * 10) / 10;
+    }
+
+    function formatTime(totalSec) {
+      const min = Math.floor(totalSec / 60);
+      const sec = Math.round(totalSec % 60);
+      return `${min}:${String(sec).padStart(2, "0")}`;
+    }
+
+    function interpolateScore(value, thresholds, higherIsBetter = true) {
+      if (value === null || Number.isNaN(value)) return 0;
+
+      const t = higherIsBetter ? thresholds : [...thresholds].reverse();
+      const p = higherIsBetter ? POINT_ANCHORS : [...POINT_ANCHORS].reverse();
+      const v = higherIsBetter ? value : -value;
+      const tv = higherIsBetter ? t : t.map(x => -x);
+
+      if (v <= tv[0]) {
+        const slope = (p[1] - p[0]) / (tv[1] - tv[0]);
+        return Math.max(0, p[0] + (v - tv[0]) * slope);
+      }
+
+      for (let i = 0; i < tv.length - 1; i++) {
+        if (v >= tv[i] && v <= tv[i + 1]) {
+          const slope = (p[i + 1] - p[i]) / (tv[i + 1] - tv[i]);
+          return p[i] + (v - tv[i]) * slope;
+        }
+      }
+
+      const last = tv.length - 1;
+      const slope = (p[last] - p[last - 1]) / (tv[last] - tv[last - 1]);
+      return p[last] + (v - tv[last]) * slope;
+    }
+
+    function updateBar(id, score) {
+      const width = clamp(score, 0, 120);
+      document.getElementById(id).style.width = `${(width / 120) * 100}%`;
+    }
+
+    function calculateScore() {
+      const sex = document.getElementById("sex").value;
+      const bw = parseFloat(document.getElementById("bodyweight").value);
+      const squat = parseFloat(document.getElementById("squat").value);
+      const pullupsRaw = parseFloat(document.getElementById("pullups").value);
+      const band = document.getElementById("pullupBand").value;
+      const carry = parseFloat(document.getElementById("carry").value);
+      const mileMin = parseFloat(document.getElementById("mileMin").value);
+      const mileSec = parseFloat(document.getElementById("mileSec").value);
+      const consistency = parseFloat(document.getElementById("consistency").value) || 0;
+
+      const table = TABLES[sex];
+
+      const squatRatio = (bw > 0 && squat > 0) ? squat / bw : null;
+      const adjustedPullups = (pullupsRaw >= 0) ? pullupsRaw * BAND_MULTIPLIERS[band] : null;
+      const mileTotalSec = (!Number.isNaN(mileMin) && !Number.isNaN(mileSec)) ? (mileMin * 60 + mileSec) : null;
+
+      const squatScore = squatRatio ? interpolateScore(squatRatio, table.squatRatio, true) : 0;
+      const pullupScore = adjustedPullups !== null ? interpolateScore(adjustedPullups, table.pullups, true) : 0;
+      const carryScore = carry ? interpolateScore(carry, table.carrySec, true) : 0;
+      const mileScore = mileTotalSec ? interpolateScore(-mileTotalSec, table.mileSec.map(v => -v), true) : 0;
+      const consistencyScore = clamp(consistency, 0, 100);
+
+      const totalScore = (
+        0.2 * squatScore +
+        0.2 * pullupScore +
+        0.2 * carryScore +
+        0.2 * mileScore +
+        0.2 * consistencyScore
+      );
+
+      document.getElementById("squatScore").textContent = round1(squatScore);
+      document.getElementById("pullupScore").textContent = round1(pullupScore);
+      document.getElementById("carryScore").textContent = round1(carryScore);
+      document.getElementById("mileScore").textContent = round1(mileScore);
+      document.getElementById("consistencyScore").textContent = round1(consistencyScore);
+      document.getElementById("totalScore").textContent = round1(totalScore);
+
+      document.getElementById("squatMeta").textContent =
+        squatRatio ? `Ratio: ${squatRatio.toFixed(2)} x BW` : "Enter squat and bodyweight";
+
+      document.getElementById("pullupMeta").textContent =
+        adjustedPullups !== null
+          ? `Adjusted reps: ${adjustedPullups.toFixed(1)} (${band})`
+          : "Enter pull-up result";
+
+      document.getElementById("carryMeta").textContent =
+        carry ? `Hold time: ${carry} sec` : (sex === "male" ? "Men: 2 x 53 lb" : "Women: 2 x 35 lb");
+
+      document.getElementById("mileMeta").textContent =
+        mileTotalSec ? `Mile time: ${formatTime(mileTotalSec)}` : "Enter mile time";
+
+      document.getElementById("consistencyMeta").textContent =
+        `Manual score: ${round1(consistencyScore)} / 100`;
+
+      updateBar("squatBar", squatScore);
+      updateBar("pullupBar", pullupScore);
+      updateBar("carryBar", carryScore);
+      updateBar("mileBar", mileScore);
+      updateBar("consistencyBar", consistencyScore);
+    }
+
+    function getFormData() {
+      return {
+        name: document.getElementById("name").value,
+        sex: document.getElementById("sex").value,
+        bodyweight: document.getElementById("bodyweight").value,
+        squat: document.getElementById("squat").value,
+        pullups: document.getElementById("pullups").value,
+        pullupBand: document.getElementById("pullupBand").value,
+        carry: document.getElementById("carry").value,
+        mileMin: document.getElementById("mileMin").value,
+        mileSec: document.getElementById("mileSec").value,
+        consistency: document.getElementById("consistency").value
+      };
+    }
+
+    function setFormData(data) {
+      if (!data) return;
+      document.getElementById("name").value = data.name || "";
+      document.getElementById("sex").value = data.sex || "male";
+      document.getElementById("bodyweight").value = data.bodyweight || "";
+      document.getElementById("squat").value = data.squat || "";
+      document.getElementById("pullups").value = data.pullups || "";
+      document.getElementById("pullupBand").value = data.pullupBand || "strict";
+      document.getElementById("carry").value = data.carry || "";
+      document.getElementById("mileMin").value = data.mileMin || "";
+      document.getElementById("mileSec").value = data.mileSec || "";
+      document.getElementById("consistency").value = data.consistency || "0";
+    }
+
+    function saveToLocal() {
+      localStorage.setItem("heatIndexForm", JSON.stringify(getFormData()));
+      alert("Saved locally on this device.");
+    }
+
+    function loadFromLocal() {
+      const saved = localStorage.getItem("heatIndexForm");
+      if (!saved) {
+        alert("No saved inputs found.");
+        return;
+      }
+      setFormData(JSON.parse(saved));
+      calculateScore();
+    }
+
+    function clearForm() {
+      setFormData({});
+      document.getElementById("sex").value = "male";
+      document.getElementById("consistency").value = "0";
+      calculateScore();
+    }
+
+    window.addEventListener("load", () => {
+      loadFromLocal();
+      calculateScore();
+    });
+  </script>
+</body>
+</html>
