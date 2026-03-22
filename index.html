@@ -334,8 +334,8 @@
         <section class="card">
           <h2>Challenge Overview</h2>
           <ol class="instructions-list">
-            <li>Test five events: squat, bench, event 3, farmer hold, and the 1.64-mile run.</li>
-            <li>Men use strict pull-ups for Event 3. Women use dead-bar hang time.</li>
+            <li>Test five events: squat, bench, pull-ups / dead-bar hang, farmer hold, and the 1.64-mile run.</li>
+            <li>Pull-Ups / Dead-Bar Hang: men perform strict pull-ups, women perform a dead-bar hang.</li>
             <li>Each event is worth 20 percent. Strong across all five beats being elite at just one.</li>
             <li>No single test day. Log a PR whenever you earn one.</li>
           </ol>
@@ -534,7 +534,7 @@
       <div class="grid">
         <section class="card">
           <h2>Leaderboard</h2>
-          <p class="small">Live PR totals from Firebase. Missing events count as zero until a PR is uploaded.</p>
+          <p class="small">Live PR totals from Firebase. Missing events count as zero until a PR is uploaded. Event-specific leaderboards are listed below the overall Heat Index rankings.</p>
           <div id="leaderboardContent" class="table-wrap">
             <p class="small">Add your Firebase config in the script block to enable the live leaderboard.</p>
           </div>
@@ -856,7 +856,7 @@
       document.getElementById("mileScore").textContent = round1(scores.mileScore);
       document.getElementById("totalScore").textContent = round1(scores.totalScore);
 
-      document.getElementById("eventThreeTitle").textContent = sex === "male" ? "Pull-ups" : "Dead-Bar Hang";
+      document.getElementById("eventThreeTitle").textContent = "Pull-Ups / Dead-Bar Hang";
 
       document.getElementById("squatMeta").textContent =
         scores.squatRatio ? `Ratio: ${scores.squatRatio.toFixed(2)} x BW` : "Enter squat and bodyweight";
@@ -983,16 +983,21 @@
           sex: data.sex || "male",
           squatRaw: (squat !== null && bodyweight > 0) ? `${squat} lb (${scores.squatRatio.toFixed(2)}x)` : "-",
           squatScore: round1(scores.squatScore),
+          squatValue: scores.squatRatio !== null ? scores.squatRatio : null,
           benchRaw: (bench !== null && bodyweight > 0) ? `${bench} lb (${scores.benchRatio.toFixed(2)}x)` : "-",
           benchScore: round1(scores.benchScore),
+          benchValue: scores.benchRatio !== null ? scores.benchRatio : null,
           eventThreeRaw: eventThree !== null
             ? ((data.sex || "male") === "male" ? `${eventThree} reps` : `${eventThree} sec`)
             : "-",
           eventThreeScore: round1(scores.eventThreeScore),
+          eventThreeValue: eventThree !== null ? eventThree : null,
           carryRaw: carry !== null ? `${carry} sec` : "-",
           carryScore: round1(scores.carryScore),
+          carryValue: carry !== null ? carry : null,
           mileRaw: mileTotalSec !== null ? formatTime(mileTotalSec) : "-",
-          mileScore: round1(scores.mileScore)
+          mileScore: round1(scores.mileScore),
+          mileValue: mileTotalSec !== null ? mileTotalSec : null
         });
       });
 
@@ -1013,7 +1018,7 @@
               <th>Heat Index</th>
               <th>Squat</th>
               <th>Bench</th>
-              <th>Event 3</th>
+              <th>Pull-Ups / Dead-Bar Hang</th>
               <th>Farmer</th>
               <th>Run</th>
             </tr>
@@ -1037,7 +1042,62 @@
         `;
       });
 
+      const makeEventTable = (title, valueKey, rawKey, higherIsBetter = true) => {
+        const filtered = rows.filter((row) => row[valueKey] !== null && row[valueKey] !== undefined);
+        filtered.sort((a, b) => higherIsBetter ? b[valueKey] - a[valueKey] : a[valueKey] - b[valueKey]);
+
+        if (!filtered.length) {
+          return `
+            <section class="card">
+              <h2>${title}</h2>
+              <p class="small">No PRs uploaded yet.</p>
+            </section>
+          `;
+        }
+
+        let sectionHtml = `
+          <section class="card">
+            <h2>${title}</h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Last Name</th>
+                    <th>Sex</th>
+                    <th>Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+        `;
+
+        filtered.forEach((row, index) => {
+          sectionHtml += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${row.lastName}</td>
+              <td>${row.sex === "male" ? "M" : "F"}</td>
+              <td>${row[rawKey]}</td>
+            </tr>
+          `;
+        });
+
+        sectionHtml += `
+                </tbody>
+              </table>
+            </div>
+          </section>
+        `;
+
+        return sectionHtml;
+      };
+
       html += '</tbody></table>';
+      html += makeEventTable('Squat Leaderboard', 'squatValue', 'squatRaw', true);
+      html += makeEventTable('Bench Leaderboard', 'benchValue', 'benchRaw', true);
+      html += makeEventTable('Pull-Ups / Dead-Bar Hang Leaderboard', 'eventThreeValue', 'eventThreeRaw', true);
+      html += makeEventTable('Farmer Hold Leaderboard', 'carryValue', 'carryRaw', true);
+      html += makeEventTable('Run Leaderboard', 'mileValue', 'mileRaw', false);
       container.innerHTML = html;
     }
 
