@@ -345,9 +345,9 @@
           <h2>How to Compete</h2>
           <ol class="instructions-list">
             <li>Open the Score tab.</li>
-            <li>Select your last name, then enter only the PRs you want to upload.</li>
-            <li>Tap Update Score to preview your Heat Index total.</li>
-            <li>Tap Upload PRs to save new numbers. Blank fields keep your old PRs.</li>
+            <li>Select your last name, then enter only the PRs you want to change.</li>
+            <li>Tap Preview Score to see what your Heat Index would be.</li>
+            <li>Tap Save PRs to upload those numbers. Blank fields leave your old PRs unchanged.</li>
           </ol>
         </section>
 
@@ -405,17 +405,6 @@
     </div>
 
     <div id="page-scorechart" class="page">
-    <div id="page-leaderboard" class="page">
-      <div class="grid">
-        <section class="card">
-          <h2>Leaderboard</h2>
-          <p class="small">Live PR totals from Firebase. Missing events count as zero until a PR is uploaded.</p>
-          <div id="leaderboardContent" class="table-wrap">
-            <p class="small">Add your Firebase config in the script block to enable the live leaderboard.</p>
-          </div>
-        </section>
-      </div>
-    </div>
       <div class="grid">
         <section class="card">
           <h2>Male Tier Table</h2>
@@ -541,6 +530,17 @@
       </div>
     </div>
 
+    <div id="page-leaderboard" class="page">
+      <div class="grid">
+        <section class="card">
+          <h2>Leaderboard</h2>
+          <p class="small">Live PR totals from Firebase. Missing events count as zero until a PR is uploaded.</p>
+          <div id="leaderboardContent" class="table-wrap">
+            <p class="small">Add your Firebase config in the script block to enable the live leaderboard.</p>
+          </div>
+        </section>
+      </div>
+    </div>
 
     <div id="page-calculator" class="page">
       <div class="grid">
@@ -626,8 +626,8 @@
         </div>
 
         <div class="btn-row">
-          <button class="btn-primary" onclick="calculateScore()">Update Score</button>
-          <button class="btn-secondary" onclick="uploadPRs()">Upload PRs</button>
+          <button class="btn-primary" onclick="calculateScore()">Preview Score</button>
+          <button class="btn-secondary" onclick="uploadPRs()">Save PRs</button>
           <button class="btn-secondary" onclick="saveToLocal()">Save My Inputs</button>
           <button class="btn-secondary" onclick="loadFromLocal()">Load Saved Inputs</button>
           <button class="btn-secondary" onclick="clearForm()">Clear</button>
