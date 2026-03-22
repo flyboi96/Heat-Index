@@ -967,10 +967,32 @@
       snapshot.forEach((doc) => {
         const data = doc.data();
         const scores = computeScoresFromValues(data);
+
+        const bodyweight = parseOptionalNumber(data.bodyweight);
+        const squat = parseOptionalNumber(data.squat);
+        const bench = parseOptionalNumber(data.bench);
+        const eventThree = parseOptionalNumber(data.pullups);
+        const carry = parseOptionalNumber(data.carry);
+        const mileMin = parseOptionalNumber(data.mileMin);
+        const mileSec = parseOptionalNumber(data.mileSec);
+        const mileTotalSec = (mileMin !== null && mileSec !== null) ? (mileMin * 60 + mileSec) : null;
+
         rows.push({
           lastName: data.lastName || doc.id,
           totalScore: round1(scores.totalScore),
-          sex: data.sex || "male"
+          sex: data.sex || "male",
+          squatRaw: (squat !== null && bodyweight > 0) ? `${squat} lb (${scores.squatRatio.toFixed(2)}x)` : "-",
+          squatScore: round1(scores.squatScore),
+          benchRaw: (bench !== null && bodyweight > 0) ? `${bench} lb (${scores.benchRatio.toFixed(2)}x)` : "-",
+          benchScore: round1(scores.benchScore),
+          eventThreeRaw: eventThree !== null
+            ? ((data.sex || "male") === "male" ? `${eventThree} reps` : `${eventThree} sec`)
+            : "-",
+          eventThreeScore: round1(scores.eventThreeScore),
+          carryRaw: carry !== null ? `${carry} sec` : "-",
+          carryScore: round1(scores.carryScore),
+          mileRaw: mileTotalSec !== null ? formatTime(mileTotalSec) : "-",
+          mileScore: round1(scores.mileScore)
         });
       });
 
@@ -989,6 +1011,11 @@
               <th>Last Name</th>
               <th>Sex</th>
               <th>Heat Index</th>
+              <th>Squat</th>
+              <th>Bench</th>
+              <th>Event 3</th>
+              <th>Farmer</th>
+              <th>Run</th>
             </tr>
           </thead>
           <tbody>
@@ -1001,6 +1028,11 @@
             <td>${row.lastName}</td>
             <td>${row.sex === "male" ? "M" : "F"}</td>
             <td>${row.totalScore}</td>
+            <td>${row.squatRaw}<br><span class="small">${row.squatScore} pts</span></td>
+            <td>${row.benchRaw}<br><span class="small">${row.benchScore} pts</span></td>
+            <td>${row.eventThreeRaw}<br><span class="small">${row.eventThreeScore} pts</span></td>
+            <td>${row.carryRaw}<br><span class="small">${row.carryScore} pts</span></td>
+            <td>${row.mileRaw}<br><span class="small">${row.mileScore} pts</span></td>
           </tr>
         `;
       });
