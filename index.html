@@ -703,6 +703,22 @@
     const POINT_ANCHORS = [20, 40, 60, 80, 100];
 
     const TABLES = {
+      male: {
+        squatRatio: [0.85, 1.15, 1.45, 1.80, 2.25],
+        benchRatio: [0.75, 1.00, 1.25, 1.55, 1.90],
+        eventThree: [3, 8, 13, 18, 25],
+        carrySec: [25, 50, 80, 120, 180],
+        runSec: [870, 750, 645, 570, 495]
+      },
+      female: {
+        squatRatio: [0.65, 0.95, 1.25, 1.55, 1.90],
+        benchRatio: [0.45, 0.65, 0.85, 1.10, 1.35],
+        eventThree: [20, 40, 70, 110, 160],
+        carrySec: [25, 50, 85, 130, 190],
+        runSec: [990, 840, 720, 630, 555]
+      }
+    };
+
     const FIREBASE_CONFIG = {
       apiKey: "AIzaSyArKbnGgpccWyBqK9jfU3s9l09Kw8h_rZI",
       authDomain: "heat-index-bfb8d.firebaseapp.com",
@@ -712,7 +728,7 @@
       appId: "1:366708033551:web:a60f236a34c0a1c6d77b7a"
     };
 
-    const HAS_FIREBASE_CONFIG = FIREBASE_CONFIG.apiKey !== "PASTE_YOUR_API_KEY";
+    const HAS_FIREBASE_CONFIG = FIREBASE_CONFIG.apiKey !== "AIzaSyArKbnGgpccWyBqK9jfU3s9l09Kw8h_rZI";
 
     let db = null;
     if (HAS_FIREBASE_CONFIG) {
@@ -768,21 +784,6 @@
         mileTotalSec
       };
     }
-      male: {
-        squatRatio: [0.85, 1.15, 1.45, 1.80, 2.25],
-        benchRatio: [0.75, 1.00, 1.25, 1.55, 1.90],
-        eventThree: [3, 8, 13, 18, 25],
-        carrySec: [25, 50, 80, 120, 180],
-        runSec: [870, 750, 645, 570, 495]
-      },
-      female: {
-        squatRatio: [0.65, 0.95, 1.25, 1.55, 1.90],
-        benchRatio: [0.45, 0.65, 0.85, 1.10, 1.35],
-        eventThree: [20, 40, 70, 110, 160],
-        carrySec: [25, 50, 85, 130, 190],
-        runSec: [990, 840, 720, 630, 555]
-      }
-    };
 
     function clamp(value, min, max) {
       return Math.min(Math.max(value, min), max);
