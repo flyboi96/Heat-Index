@@ -346,8 +346,9 @@
           <ol class="instructions-list">
             <li>Open the Score tab.</li>
             <li>Select your last name, then enter only the PRs you want to change.</li>
-            <li>Tap Preview Score to see what your Heat Index would be.</li>
-            <li>Tap Save PRs to upload those numbers. Blank fields leave your old PRs unchanged.</li>
+            <li>Tap Preview Heat Index to see what your score would be before uploading anything.</li>
+            <li>Tap Upload PRs to Leaderboard to save those numbers to the live leaderboard. Blank fields leave your old PRs unchanged.</li>
+            <li>Tap Save Form on This Device to keep your current entries on your phone or browser. Tap Load Saved Form from This Device to bring them back later.</li>
           </ol>
         </section>
 
@@ -626,15 +627,15 @@
         </div>
 
         <div class="btn-row">
-          <button class="btn-primary" onclick="calculateScore()">Preview Score</button>
-          <button class="btn-secondary" onclick="uploadPRs()">Save PRs</button>
-          <button class="btn-secondary" onclick="saveToLocal()">Save My Inputs</button>
-          <button class="btn-secondary" onclick="loadFromLocal()">Load Saved Inputs</button>
-          <button class="btn-secondary" onclick="clearForm()">Clear</button>
+          <button class="btn-primary" onclick="calculateScore()">Preview Heat Index</button>
+          <button class="btn-secondary" onclick="uploadPRs()">Upload PRs to Leaderboard</button>
+          <button class="btn-secondary" onclick="saveToLocal()">Save Form on This Device</button>
+          <button class="btn-secondary" onclick="loadFromLocal()">Load Saved Form from This Device</button>
+          <button class="btn-secondary" onclick="clearForm()">Clear Current Form</button>
         </div>
 
         <p class="footer-note">
-          Five events. Twenty percent each. Blank fields do not overwrite old PRs when you upload.
+          Preview Heat Index only shows your score on this page. Upload PRs to Leaderboard saves new PRs to Firebase. Blank fields do not overwrite old PRs when you upload.
         </p>
       </section>
 
@@ -1042,9 +1043,9 @@
         `;
       });
 
-      const makeEventTable = (title, valueKey, rawKey, higherIsBetter = true) => {
-        const filtered = rows.filter((row) => row[valueKey] !== null && row[valueKey] !== undefined);
-        filtered.sort((a, b) => higherIsBetter ? b[valueKey] - a[valueKey] : a[valueKey] - b[valueKey]);
+      const makeEventTable = (title, valueKey, rawKey, scoreKey) => {
+        const filtered = rows.filter((row) => row[scoreKey] !== null && row[scoreKey] !== undefined);
+        filtered.sort((a, b) => b[scoreKey] - a[scoreKey]);
 
         if (!filtered.length) {
           return `
@@ -1066,6 +1067,7 @@
                     <th>Last Name</th>
                     <th>Sex</th>
                     <th>Result</th>
+                    <th>Points</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1078,6 +1080,7 @@
               <td>${row.lastName}</td>
               <td>${row.sex === "male" ? "M" : "F"}</td>
               <td>${row[rawKey]}</td>
+              <td>${row[scoreKey]}</td>
             </tr>
           `;
         });
@@ -1093,11 +1096,11 @@
       };
 
       html += '</tbody></table>';
-      html += makeEventTable('Squat Leaderboard', 'squatValue', 'squatRaw', true);
-      html += makeEventTable('Bench Leaderboard', 'benchValue', 'benchRaw', true);
-      html += makeEventTable('Pull-Ups / Dead-Bar Hang Leaderboard', 'eventThreeValue', 'eventThreeRaw', true);
-      html += makeEventTable('Farmer Hold Leaderboard', 'carryValue', 'carryRaw', true);
-      html += makeEventTable('Run Leaderboard', 'mileValue', 'mileRaw', false);
+      html += makeEventTable('Squat Leaderboard', 'squatValue', 'squatRaw', 'squatScore');
+      html += makeEventTable('Bench Leaderboard', 'benchValue', 'benchRaw', 'benchScore');
+      html += makeEventTable('Pull-Ups / Dead-Bar Hang Leaderboard', 'eventThreeValue', 'eventThreeRaw', 'eventThreeScore');
+      html += makeEventTable('Farmer Hold Leaderboard', 'carryValue', 'carryRaw', 'carryScore');
+      html += makeEventTable('Run Leaderboard', 'mileValue', 'mileRaw', 'mileScore');
       container.innerHTML = html;
     }
 
