@@ -614,7 +614,7 @@
             <label for="mileMin">1.64-Mile Time</label>
             <div class="row">
               <div class="field" style="margin-bottom:0;">
-                <input id="mileMin" type="number" min="0" step="1" placeholder="Harry Squatter: 10" />
+                <input id="mileMin" type="number" min="0" step="1" placeholder="10" />
                 <label class="small">Minutes</label>
               </div>
               <div class="field" style="margin-bottom:0;">
@@ -728,8 +728,7 @@
       appId: "1:366708033551:web:a60f236a34c0a1c6d77b7a"
     };
 
-    const HAS_FIREBASE_CONFIG = FIREBASE_CONFIG.apiKey !== "AIzaSyArKbnGgpccWyBqK9jfU3s9l09Kw8h_rZI";
-
+    const HAS_FIREBASE_CONFIG = FIREBASE_CONFIG.apiKey !== "PASTE_YOUR_API_KEY";
     let db = null;
     if (HAS_FIREBASE_CONFIG) {
       firebase.initializeApp(FIREBASE_CONFIG);
