@@ -325,6 +325,7 @@
         <button class="tab-btn" type="button" data-page="instructions">Events &amp; Rules</button>
         <button class="tab-btn" type="button" data-page="scorechart">Standards</button>
         <button class="tab-btn" type="button" data-page="calculator">Score</button>
+        <button class="tab-btn" type="button" data-page="leaderboard">Leaderboard</button>
       </div>
     </section>
 
@@ -344,9 +345,9 @@
           <h2>How to Compete</h2>
           <ol class="instructions-list">
             <li>Open the Score tab.</li>
-            <li>Enter your sex, bodyweight, and best result in each event.</li>
-            <li>Tap Update Score to see your Heat Index total.</li>
-            <li>Tap Save My Inputs to keep your current numbers on this device.</li>
+            <li>Select your last name, then enter only the PRs you want to upload.</li>
+            <li>Tap Update Score to preview your Heat Index total.</li>
+            <li>Tap Upload PRs to save new numbers. Blank fields keep your old PRs.</li>
           </ol>
         </section>
 
@@ -404,6 +405,17 @@
     </div>
 
     <div id="page-scorechart" class="page">
+    <div id="page-leaderboard" class="page">
+      <div class="grid">
+        <section class="card">
+          <h2>Leaderboard</h2>
+          <p class="small">Live PR totals from Firebase. Missing events count as zero until a PR is uploaded.</p>
+          <div id="leaderboardContent" class="table-wrap">
+            <p class="small">Add your Firebase config in the script block to enable the live leaderboard.</p>
+          </div>
+        </section>
+      </div>
+    </div>
       <div class="grid">
         <section class="card">
           <h2>Male Tier Table</h2>
@@ -537,8 +549,27 @@
 
         <div class="row">
           <div class="field">
-            <label for="name">Name</label>
-            <input id="name" type="text" placeholder="Harry Squatter" />
+            <label for="lastName">Last Name</label>
+            <select id="lastName">
+              <option value="">Select your last name</option>
+              <option value="Corbin">Corbin</option>
+              <option value="Naginis">Naginis</option>
+              <option value="Rohrer">Rohrer</option>
+              <option value="Palmer">Palmer</option>
+              <option value="Wei">Wei</option>
+              <option value="Cowan">Cowan</option>
+              <option value="Manley">Manley</option>
+              <option value="Mahrlig">Mahrlig</option>
+              <option value="Stewart">Stewart</option>
+              <option value="Milner">Milner</option>
+              <option value="Harris">Harris</option>
+              <option value="Ortiz">Ortiz</option>
+              <option value="Semon">Semon</option>
+              <option value="Snyder">Snyder</option>
+              <option value="Martindale">Martindale</option>
+              <option value="Dsouza">Dsouza</option>
+              <option value="Aring">Aring</option>
+            </select>
           </div>
           <div class="field">
             <label for="sex">Sex</label>
@@ -596,13 +627,15 @@
 
         <div class="btn-row">
           <button class="btn-primary" onclick="calculateScore()">Update Score</button>
+          <button class="btn-secondary" onclick="uploadPRs()">Upload PRs</button>
           <button class="btn-secondary" onclick="saveToLocal()">Save My Inputs</button>
           <button class="btn-secondary" onclick="loadFromLocal()">Load Saved Inputs</button>
           <button class="btn-secondary" onclick="clearForm()">Clear</button>
         </div>
 
         <p class="footer-note">
-          Five events. Twenty percent each. Scores interpolate from Beginner to Elite and continue above Elite.        </p>
+          Five events. Twenty percent each. Blank fields do not overwrite old PRs when you upload.
+        </p>
       </section>
 
       <section class="card">
@@ -664,10 +697,77 @@
     </div>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script>
     const POINT_ANCHORS = [20, 40, 60, 80, 100];
 
     const TABLES = {
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyArKbnGgpccWyBqK9jfU3s9l09Kw8h_rZI",
+      authDomain: "heat-index-bfb8d.firebaseapp.com",
+      projectId: "heat-index-bfb8d",
+      storageBucket: "heat-index-bfb8d.firebasestorage.app",
+      messagingSenderId: "366708033551",
+      appId: "1:366708033551:web:a60f236a34c0a1c6d77b7a"
+    };
+
+    const HAS_FIREBASE_CONFIG = FIREBASE_CONFIG.apiKey !== "PASTE_YOUR_API_KEY";
+
+    let db = null;
+    if (HAS_FIREBASE_CONFIG) {
+      firebase.initializeApp(FIREBASE_CONFIG);
+      db = firebase.firestore();
+    }
+
+    function parseOptionalNumber(value) {
+      if (value === "" || value === null || value === undefined) return null;
+      const parsed = parseFloat(value);
+      return Number.isNaN(parsed) ? null : parsed;
+    }
+
+    function computeScoresFromValues(values) {
+      const table = TABLES[values.sex || "male"];
+      const bw = parseOptionalNumber(values.bodyweight);
+      const squat = parseOptionalNumber(values.squat);
+      const bench = parseOptionalNumber(values.bench);
+      const eventThreeRaw = parseOptionalNumber(values.pullups);
+      const carry = parseOptionalNumber(values.carry);
+      const mileMin = parseOptionalNumber(values.mileMin);
+      const mileSec = parseOptionalNumber(values.mileSec);
+
+      const squatRatio = (bw > 0 && squat > 0) ? squat / bw : null;
+      const benchRatio = (bw > 0 && bench > 0) ? bench / bw : null;
+      const eventThreeValue = eventThreeRaw !== null && eventThreeRaw >= 0 ? eventThreeRaw : null;
+      const mileTotalSec = (mileMin !== null && mileSec !== null) ? (mileMin * 60 + mileSec) : null;
+
+      const squatScore = squatRatio ? interpolateScore(squatRatio, table.squatRatio, true) : 0;
+      const benchScore = benchRatio ? interpolateScore(benchRatio, table.benchRatio, true) : 0;
+      const eventThreeScore = eventThreeValue !== null ? interpolateScore(eventThreeValue, table.eventThree, true) : 0;
+      const carryScore = carry ? interpolateScore(carry, table.carrySec, true) : 0;
+      const mileScore = mileTotalSec ? interpolateScore(-mileTotalSec, table.runSec.map(v => -v), true) : 0;
+
+      const totalScore = (
+        0.2 * squatScore +
+        0.2 * benchScore +
+        0.2 * eventThreeScore +
+        0.2 * carryScore +
+        0.2 * mileScore
+      );
+
+      return {
+        squatScore,
+        benchScore,
+        eventThreeScore,
+        carryScore,
+        mileScore,
+        totalScore,
+        squatRatio,
+        benchRatio,
+        eventThreeValue,
+        mileTotalSec
+      };
+    }
       male: {
         squatRatio: [0.85, 1.15, 1.45, 1.80, 2.25],
         benchRatio: [0.75, 1.00, 1.25, 1.55, 1.90],
@@ -738,63 +838,53 @@
       const mileMin = parseFloat(document.getElementById("mileMin").value);
       const mileSec = parseFloat(document.getElementById("mileSec").value);
 
-      const table = TABLES[sex];
+      const scores = computeScoresFromValues({
+        sex,
+        bodyweight: bw,
+        squat,
+        bench,
+        pullups: eventThreeRaw,
+        carry,
+        mileMin,
+        mileSec
+      });
 
-      const squatRatio = (bw > 0 && squat > 0) ? squat / bw : null;
-      const benchRatio = (bw > 0 && bench > 0) ? bench / bw : null;
-      const eventThreeValue = (!Number.isNaN(eventThreeRaw) && eventThreeRaw >= 0) ? eventThreeRaw : null;
-      const mileTotalSec = (!Number.isNaN(mileMin) && !Number.isNaN(mileSec)) ? (mileMin * 60 + mileSec) : null;
-
-      const squatScore = squatRatio ? interpolateScore(squatRatio, table.squatRatio, true) : 0;
-      const benchScore = benchRatio ? interpolateScore(benchRatio, table.benchRatio, true) : 0;
-      const eventThreeScore = eventThreeValue !== null ? interpolateScore(eventThreeValue, table.eventThree, true) : 0;
-      const carryScore = carry ? interpolateScore(carry, table.carrySec, true) : 0;
-      const mileScore = mileTotalSec ? interpolateScore(-mileTotalSec, table.runSec.map(v => -v), true) : 0;
-
-      const totalScore = (
-        0.2 * squatScore +
-        0.2 * benchScore +
-        0.2 * eventThreeScore +
-        0.2 * carryScore +
-        0.2 * mileScore
-      );
-
-      document.getElementById("squatScore").textContent = round1(squatScore);
-      document.getElementById("benchScore").textContent = round1(benchScore);
-      document.getElementById("eventThreeScore").textContent = round1(eventThreeScore);
-      document.getElementById("carryScore").textContent = round1(carryScore);
-      document.getElementById("mileScore").textContent = round1(mileScore);
-      document.getElementById("totalScore").textContent = round1(totalScore);
+      document.getElementById("squatScore").textContent = round1(scores.squatScore);
+      document.getElementById("benchScore").textContent = round1(scores.benchScore);
+      document.getElementById("eventThreeScore").textContent = round1(scores.eventThreeScore);
+      document.getElementById("carryScore").textContent = round1(scores.carryScore);
+      document.getElementById("mileScore").textContent = round1(scores.mileScore);
+      document.getElementById("totalScore").textContent = round1(scores.totalScore);
 
       document.getElementById("eventThreeTitle").textContent = sex === "male" ? "Pull-ups" : "Dead-Bar Hang";
 
       document.getElementById("squatMeta").textContent =
-        squatRatio ? `Ratio: ${squatRatio.toFixed(2)} x BW` : "Enter squat and bodyweight";
+        scores.squatRatio ? `Ratio: ${scores.squatRatio.toFixed(2)} x BW` : "Enter squat and bodyweight";
 
       document.getElementById("benchMeta").textContent =
-        benchRatio ? `Ratio: ${benchRatio.toFixed(2)} x BW` : "Enter bench and bodyweight";
+        scores.benchRatio ? `Ratio: ${scores.benchRatio.toFixed(2)} x BW` : "Enter bench and bodyweight";
 
       document.getElementById("eventThreeMeta").textContent =
-        eventThreeValue !== null
-          ? (sex === "male" ? `Strict reps: ${eventThreeValue}` : `Dead-bar hang: ${eventThreeValue} sec`)
+        scores.eventThreeValue !== null
+          ? (sex === "male" ? `Strict reps: ${scores.eventThreeValue}` : `Dead-bar hang: ${scores.eventThreeValue} sec`)
           : "Men: pull-ups. Women: dead-bar hang.";
 
       document.getElementById("carryMeta").textContent =
         carry ? `Hold time: ${carry} sec` : (sex === "male" ? "Men: 2 x 24 kg / 53 lb" : "Women: 2 x 16 kg / 35 lb");
 
       document.getElementById("mileMeta").textContent =
-        mileTotalSec ? `1.64-mile time: ${formatTime(mileTotalSec)}` : "Enter 1.64-mile time";
+        scores.mileTotalSec ? `1.64-mile time: ${formatTime(scores.mileTotalSec)}` : "Enter 1.64-mile time";
 
-      updateBar("squatBar", squatScore);
-      updateBar("benchBar", benchScore);
-      updateBar("eventThreeBar", eventThreeScore);
-      updateBar("carryBar", carryScore);
-      updateBar("mileBar", mileScore);
+      updateBar("squatBar", scores.squatScore);
+      updateBar("benchBar", scores.benchScore);
+      updateBar("eventThreeBar", scores.eventThreeScore);
+      updateBar("carryBar", scores.carryScore);
+      updateBar("mileBar", scores.mileScore);
     }
 
     function getFormData() {
       return {
-        name: document.getElementById("name").value,
+        lastName: document.getElementById("lastName").value,
         sex: document.getElementById("sex").value,
         bodyweight: document.getElementById("bodyweight").value,
         squat: document.getElementById("squat").value,
@@ -808,7 +898,7 @@
 
     function setFormData(data) {
       if (!data) return;
-      document.getElementById("name").value = data.name || "";
+      document.getElementById("lastName").value = data.lastName || "";
       document.getElementById("sex").value = data.sex || "male";
       document.getElementById("bodyweight").value = data.bodyweight || "";
       document.getElementById("squat").value = data.squat || "";
@@ -824,6 +914,101 @@
       alert("Saved locally on this device.");
     }
 
+    async function uploadPRs() {
+      if (!HAS_FIREBASE_CONFIG || !db) {
+        alert("Add your Firebase config in index.html first.");
+        return;
+      }
+
+      const lastName = document.getElementById("lastName").value.trim();
+      if (!lastName) {
+        alert("Select your last name before uploading.");
+        return;
+      }
+
+      const docRef = db.collection("heatIndexPRs").doc(lastName.toLowerCase());
+      const snapshot = await docRef.get();
+      const existing = snapshot.exists ? snapshot.data() : {};
+      const formData = getFormData();
+
+      const updates = {
+        lastName,
+        sex: formData.sex || existing.sex || "male",
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      ["bodyweight", "squat", "bench", "pullups", "carry", "mileMin", "mileSec"].forEach((key) => {
+        if (formData[key] !== "") {
+          updates[key] = formData[key];
+        }
+      });
+
+      const merged = { ...existing, ...updates };
+      const scores = computeScoresFromValues(merged);
+      updates.totalScore = round1(scores.totalScore);
+
+      await docRef.set(updates, { merge: true });
+      alert(`Uploaded PRs for ${lastName}.`);
+      loadLeaderboard();
+    }
+
+    async function loadLeaderboard() {
+      const container = document.getElementById("leaderboardContent");
+      if (!container) return;
+
+      if (!HAS_FIREBASE_CONFIG || !db) {
+        container.innerHTML = '<p class="small">Add your Firebase config in the script block to enable the live leaderboard.</p>';
+        return;
+      }
+
+      const snapshot = await db.collection("heatIndexPRs").get();
+      const rows = [];
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const scores = computeScoresFromValues(data);
+        rows.push({
+          lastName: data.lastName || doc.id,
+          totalScore: round1(scores.totalScore),
+          sex: data.sex || "male"
+        });
+      });
+
+      rows.sort((a, b) => b.totalScore - a.totalScore);
+
+      if (!rows.length) {
+        container.innerHTML = '<p class="small">No PRs uploaded yet.</p>';
+        return;
+      }
+
+      let html = `
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Last Name</th>
+              <th>Sex</th>
+              <th>Heat Index</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      rows.forEach((row, index) => {
+        html += `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${row.lastName}</td>
+            <td>${row.sex === "male" ? "M" : "F"}</td>
+            <td>${row.totalScore}</td>
+          </tr>
+        `;
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
     function loadFromLocal() {
       const saved = localStorage.getItem("heatIndexForm");
       if (!saved) {
@@ -836,6 +1021,7 @@
     function clearForm() {
       setFormData({});
       document.getElementById("sex").value = "male";
+      document.getElementById("lastName").value = "";
       calculateScore();
     }
 
@@ -858,6 +1044,9 @@
     document.querySelectorAll(".tab-btn").forEach((button) => {
       button.addEventListener("click", () => {
         showPage(button.dataset.page);
+        if (button.dataset.page === "leaderboard") {
+          loadLeaderboard();
+        }
       });
     });
 
@@ -869,6 +1058,7 @@
       loadFromLocal();
       calculateScore();
       showPage("home");
+      loadLeaderboard();
     });
   </script>
 </body>
