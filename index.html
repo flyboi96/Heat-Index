@@ -55,6 +55,38 @@
       font-size: 0.95rem;
     }
 
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .tab-btn {
+      background: var(--card-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #111827;
+      border-color: var(--accent);
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
     .grid {
       display: grid;
       gap: 14px;
@@ -229,6 +261,49 @@
       margin-top: 8px;
     }
 
+    .route-img {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      display: block;
+      margin-top: 12px;
+    }
+
+    .route-caption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .instructions-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--text);
+    }
+
+    .instructions-list li {
+      margin-bottom: 10px;
+    }
+
+    .callout {
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.28);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .callout h3 {
+      margin: 0 0 8px;
+      font-size: 0.98rem;
+    }
+
+    .callout p {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+
+
     @media (max-width: 600px) {
       .row {
         grid-template-columns: 1fr;
@@ -244,17 +319,226 @@
   <div class="container">
     <section class="hero">
       <h1 class="title">Heat Index</h1>
-      <p class="subtitle">Track strength, conditioning, and consistency. Log PRs anytime. Build your score. Compete in the heat.</p>
+      <p class="subtitle">Track strength, conditioning, and performance. Log PRs anytime. Build your score. Compete in the heat.</p>
+      <div class="tabs">
+        <button class="tab-btn active" type="button" data-page="home">Overview</button>
+        <button class="tab-btn" type="button" data-page="instructions">Events &amp; Rules</button>
+        <button class="tab-btn" type="button" data-page="scorechart">Standards</button>
+        <button class="tab-btn" type="button" data-page="calculator">Score</button>
+      </div>
     </section>
 
-    <div class="grid">
+    <div id="page-home" class="page active">
+      <div class="grid">
+        <section class="card">
+          <h2>Challenge Overview</h2>
+          <ol class="instructions-list">
+            <li>Test five events: squat, bench, event 3, farmer hold, and the 1.64-mile run.</li>
+            <li>Men use strict pull-ups for Event 3. Women use dead-bar hang time.</li>
+            <li>Each event is worth 20 percent. Strong across all five beats being elite at just one.</li>
+            <li>No single test day. Log a PR whenever you earn one.</li>
+          </ol>
+        </section>
+
+        <section class="card">
+          <h2>How to Compete</h2>
+          <ol class="instructions-list">
+            <li>Open the Score tab.</li>
+            <li>Enter your sex, bodyweight, and best result in each event.</li>
+            <li>Tap Update Score to see your Heat Index total.</li>
+            <li>Tap Save My Inputs to keep your current numbers on this device.</li>
+          </ol>
+        </section>
+
+        <section class="card">
+          <h2>How Scoring Works</h2>
+          <ol class="instructions-list">
+            <li>Each event scores from 0 to 100 based on where you fall between the tier standards.</li>
+            <li>Beginner = 20, Novice = 40, Intermediate = 60, Advanced = 80, Elite = 100.</li>
+            <li>You can score above Elite, so there is always room to improve.</li>
+            <li>Your final Heat Index score is the average of all five event scores.</li>
+          </ol>
+        </section>
+
+        <section class="card">
+          <h2>Example Athlete</h2>
+          <div class="callout">
+            <h3>Harry Squatter, 155 lb</h3>
+            <p>Squat 275 = 1.77x BW. Bench 205 = 1.32x BW. Pull-ups 12. Farmer hold 75 sec. Run 10:45. Solid across the board, with room to climb in every event.</p>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="page-instructions" class="page">
+      <div class="grid">
+        <section class="card">
+          <h2>Challenge Rules</h2>
+          <ol class="instructions-list">
+            <li>Strength events (squat and bench) are scored as 3RM divided by bodyweight.</li>
+            <li>Event 3: men perform strict pull-ups, women perform a dead-bar hang.</li>
+            <li>Farmer hold: 2 x 24 kg / 53 lb (men), 2 x 16 kg / 35 lb (women).</li>
+            <li>Run: 1.64 miles total. One out-and-back (0.82) completed twice.</li>
+            <li>Each event is worth 20 points per tier: Beginner 20, Novice 40, Intermediate 60, Advanced 80, Elite 100.</li>
+            <li>No ceiling. Scores continue past Elite. Keep pushing.</li>
+          </ol>
+        </section>
+
+        <section class="card">
+          <h2>What Counts</h2>
+          <ol class="instructions-list">
+            <li>Squat: below parallel, controlled, and clearly completed for 3 reps.</li>
+            <li>Bench: bar touches chest, full lockout, and no excessive bounce.</li>
+            <li>Pull-ups: dead hang to chin clearly over bar. No kipping.</li>
+            <li>Dead-bar hang: full grip, feet off ground, no touching down.</li>
+            <li>Farmer hold: stand tall, no resting on legs, ends when one bell touches down.</li>
+          </ol>
+        </section>
+
+        <section class="card">
+          <h2>Run Route</h2>
+          <img src="CLDJ route.png" alt="1.64-mile run route just south of the soccer field and NEX" class="route-img" />
+          <p class="route-caption">Start at the marked start/finish point, run to the turnaround point, then return to start. That out-and-back is 0.82 miles total. Repeat the same out-and-back one more time for 1.64 miles total. The route is just south of the soccer field/NEX.</p>
+        </section>
+      </div>
+    </div>
+
+    <div id="page-scorechart" class="page">
+      <div class="grid">
+        <section class="card">
+          <h2>Male Tier Table</h2>
+          <p class="small">Points by tier: Beginner = 20, Novice = 40, Intermediate = 60, Advanced = 80, Elite = 100</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>Beginner</th>
+                  <th>Novice</th>
+                  <th>Intermediate</th>
+                  <th>Advanced</th>
+                  <th>Elite</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Squat 3RM / BW</td>
+                  <td>0.85</td>
+                  <td>1.15</td>
+                  <td>1.45</td>
+                  <td>1.80</td>
+                  <td>2.25</td>
+                </tr>
+                <tr>
+                  <td>Bench 3RM / BW</td>
+                  <td>0.75</td>
+                  <td>1.00</td>
+                  <td>1.25</td>
+                  <td>1.55</td>
+                  <td>1.90</td>
+                </tr>
+                <tr>
+                  <td>Pull-ups</td>
+                  <td>3</td>
+                  <td>8</td>
+                  <td>13</td>
+                  <td>18</td>
+                  <td>25</td>
+                </tr>
+                <tr>
+                  <td>Farmer Hold (sec)</td>
+                  <td>25</td>
+                  <td>50</td>
+                  <td>80</td>
+                  <td>120</td>
+                  <td>180</td>
+                </tr>
+                <tr>
+                  <td>1.64-Mile Run</td>
+                  <td>14:30</td>
+                  <td>12:30</td>
+                  <td>10:45</td>
+                  <td>9:30</td>
+                  <td>8:15</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Female Tier Table</h2>
+          <p class="small">Points by tier: Beginner = 20, Novice = 40, Intermediate = 60, Advanced = 80, Elite = 100</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>Beginner</th>
+                  <th>Novice</th>
+                  <th>Intermediate</th>
+                  <th>Advanced</th>
+                  <th>Elite</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Squat 3RM / BW</td>
+                  <td>0.65</td>
+                  <td>0.95</td>
+                  <td>1.25</td>
+                  <td>1.55</td>
+                  <td>1.90</td>
+                </tr>
+                <tr>
+                  <td>Bench 3RM / BW</td>
+                  <td>0.45</td>
+                  <td>0.65</td>
+                  <td>0.85</td>
+                  <td>1.10</td>
+                  <td>1.35</td>
+                </tr>
+                <tr>
+                  <td>Dead-Bar Hang (sec)</td>
+                  <td>20</td>
+                  <td>40</td>
+                  <td>70</td>
+                  <td>110</td>
+                  <td>160</td>
+                </tr>
+                <tr>
+                  <td>Farmer Hold (sec)</td>
+                  <td>25</td>
+                  <td>50</td>
+                  <td>85</td>
+                  <td>130</td>
+                  <td>190</td>
+                </tr>
+                <tr>
+                  <td>1.64-Mile Run</td>
+                  <td>16:30</td>
+                  <td>14:00</td>
+                  <td>12:00</td>
+                  <td>10:30</td>
+                  <td>9:15</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+
+    <div id="page-calculator" class="page">
+      <div class="grid">
       <section class="card">
         <h2>Athlete Inputs</h2>
 
         <div class="row">
           <div class="field">
             <label for="name">Name</label>
-            <input id="name" type="text" placeholder="Alex" />
+            <input id="name" type="text" placeholder="Harry Squatter" />
           </div>
           <div class="field">
             <label for="sex">Sex</label>
@@ -268,51 +552,42 @@
         <div class="row">
           <div class="field">
             <label for="bodyweight">Bodyweight (lb)</label>
-            <input id="bodyweight" type="number" min="1" step="0.1" placeholder="155" />
+            <input id="bodyweight" type="number" min="1" step="0.1" placeholder="Harry Squatter: 155" />
           </div>
           <div class="field">
-            <label for="consistency">Consistency Points (0-100)</label>
-            <input id="consistency" type="number" min="0" max="100" step="1" value="0" />
+            <label for="bench">Bench 3RM (lb)</label>
+            <input id="bench" type="number" min="0" step="1" placeholder="Harry Squatter: 205" />
           </div>
         </div>
 
         <div class="row">
           <div class="field">
             <label for="squat">Squat 3RM (lb)</label>
-            <input id="squat" type="number" min="0" step="1" placeholder="275" />
+            <input id="squat" type="number" min="0" step="1" placeholder="Harry Squatter: 275" />
           </div>
           <div class="field">
-            <label for="pullups">Pull-ups (strict reps)</label>
-            <input id="pullups" type="number" min="0" step="1" placeholder="12" />
+            <label for="eventThree">Pull-ups / Hang</label>
+            <input id="pullups" type="number" min="0" step="1" placeholder="Harry Squatter: 12" />
           </div>
         </div>
 
         <div class="row">
-          <div class="field">
-            <label for="pullupBand">Pull-up Assist</label>
-            <select id="pullupBand">
-              <option value="strict">Strict</option>
-              <option value="light">Light Band</option>
-              <option value="medium">Medium Band</option>
-              <option value="heavy">Heavy Band</option>
-            </select>
-          </div>
           <div class="field">
             <label for="carry">Farmer Hold Time (sec)</label>
-            <input id="carry" type="number" min="0" step="1" placeholder="75" />
+            <input id="carry" type="number" min="0" step="1" placeholder="Harry Squatter: 75" />
           </div>
         </div>
 
         <div class="row">
           <div class="field">
-            <label for="mileMin">1-Mile Time</label>
+            <label for="mileMin">1.64-Mile Time</label>
             <div class="row">
               <div class="field" style="margin-bottom:0;">
-                <input id="mileMin" type="number" min="0" step="1" placeholder="6" />
+                <input id="mileMin" type="number" min="0" step="1" placeholder="Harry Squatter: 10" />
                 <label class="small">Minutes</label>
               </div>
               <div class="field" style="margin-bottom:0;">
-                <input id="mileSec" type="number" min="0" max="59" step="1" placeholder="30" />
+                <input id="mileSec" type="number" min="0" max="59" step="1" placeholder="45" />
                 <label class="small">Seconds</label>
               </div>
             </div>
@@ -320,15 +595,14 @@
         </div>
 
         <div class="btn-row">
-          <button class="btn-primary" onclick="calculateScore()">Calculate Score</button>
+          <button class="btn-primary" onclick="calculateScore()">Update Score</button>
           <button class="btn-secondary" onclick="saveToLocal()">Save My Inputs</button>
           <button class="btn-secondary" onclick="loadFromLocal()">Load Saved Inputs</button>
           <button class="btn-secondary" onclick="clearForm()">Clear</button>
         </div>
 
         <p class="footer-note">
-          Event weights are all 20 percent. Scores are interpolated from Beginner to Elite and continue above Elite.
-        </p>
+          Five events. Twenty percent each. Scores interpolate from Beginner to Elite and continue above Elite.        </p>
       </section>
 
       <section class="card">
@@ -351,11 +625,20 @@
 
           <div class="result-item">
             <div class="result-top">
-              <div class="result-title">Pull-ups</div>
-              <div class="result-score" id="pullupScore">0.0</div>
+              <div class="result-title">Bench</div>
+              <div class="result-score" id="benchScore">0.0</div>
             </div>
-            <div class="bar"><div class="bar-fill" id="pullupBar"></div></div>
-            <div class="small" id="pullupMeta">Enter pull-up result</div>
+            <div class="bar"><div class="bar-fill" id="benchBar"></div></div>
+            <div class="small" id="benchMeta">Enter bench and bodyweight</div>
+          </div>
+
+          <div class="result-item">
+            <div class="result-top">
+              <div class="result-title" id="eventThreeTitle">Pull-ups</div>
+              <div class="result-score" id="eventThreeScore">0.0</div>
+            </div>
+            <div class="bar"><div class="bar-fill" id="eventThreeBar"></div></div>
+            <div class="small" id="eventThreeMeta">Men: pull-ups. Women: dead-bar hang.</div>
           </div>
 
           <div class="result-item">
@@ -364,121 +647,20 @@
               <div class="result-score" id="carryScore">0.0</div>
             </div>
             <div class="bar"><div class="bar-fill" id="carryBar"></div></div>
-            <div class="small" id="carryMeta">Men: 2 x 53 lb, Women: 2 x 35 lb</div>
+            <div class="small" id="carryMeta">Men: 2 x 24 kg / 53 lb, Women: 2 x 16 kg / 35 lb</div>
           </div>
 
           <div class="result-item">
             <div class="result-top">
-              <div class="result-title">1-Mile Run</div>
+              <div class="result-title">1.64-Mile Run</div>
               <div class="result-score" id="mileScore">0.0</div>
             </div>
             <div class="bar"><div class="bar-fill" id="mileBar"></div></div>
-            <div class="small" id="mileMeta">Enter mile time</div>
-          </div>
-
-          <div class="result-item">
-            <div class="result-top">
-              <div class="result-title">Consistency</div>
-              <div class="result-score" id="consistencyScore">0.0</div>
-            </div>
-            <div class="bar"><div class="bar-fill" id="consistencyBar"></div></div>
-            <div class="small" id="consistencyMeta">Manual input from 0 to 100</div>
+            <div class="small" id="mileMeta">Enter 1.64-mile time</div>
           </div>
         </div>
       </section>
 
-      <section class="card">
-        <h2>Tier Tables</h2>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Event</th>
-                <th>Sex</th>
-                <th>Beginner</th>
-                <th>Novice</th>
-                <th>Intermediate</th>
-                <th>Advanced</th>
-                <th>Elite</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Squat 3RM / BW</td>
-                <td>Male</td>
-                <td>0.85</td>
-                <td>1.15</td>
-                <td>1.45</td>
-                <td>1.80</td>
-                <td>2.25</td>
-              </tr>
-              <tr>
-                <td>Squat 3RM / BW</td>
-                <td>Female</td>
-                <td>0.65</td>
-                <td>0.95</td>
-                <td>1.25</td>
-                <td>1.55</td>
-                <td>1.90</td>
-              </tr>
-              <tr>
-                <td>Pull-ups</td>
-                <td>Male</td>
-                <td>3</td>
-                <td>8</td>
-                <td>13</td>
-                <td>18</td>
-                <td>25</td>
-              </tr>
-              <tr>
-                <td>Pull-ups</td>
-                <td>Female</td>
-                <td>1</td>
-                <td>4</td>
-                <td>8</td>
-                <td>12</td>
-                <td>18</td>
-              </tr>
-              <tr>
-                <td>Farmer Hold (sec)</td>
-                <td>Male</td>
-                <td>25</td>
-                <td>50</td>
-                <td>80</td>
-                <td>120</td>
-                <td>180</td>
-              </tr>
-              <tr>
-                <td>Farmer Hold (sec)</td>
-                <td>Female</td>
-                <td>25</td>
-                <td>50</td>
-                <td>85</td>
-                <td>130</td>
-                <td>190</td>
-              </tr>
-              <tr>
-                <td>1-Mile Run</td>
-                <td>Male</td>
-                <td>8:45</td>
-                <td>7:40</td>
-                <td>6:40</td>
-                <td>5:50</td>
-                <td>5:00</td>
-              </tr>
-              <tr>
-                <td>1-Mile Run</td>
-                <td>Female</td>
-                <td>10:00</td>
-                <td>8:45</td>
-                <td>7:40</td>
-                <td>6:40</td>
-                <td>5:40</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
     </div>
   </div>
 
@@ -488,23 +670,18 @@
     const TABLES = {
       male: {
         squatRatio: [0.85, 1.15, 1.45, 1.80, 2.25],
-        pullups: [3, 8, 13, 18, 25],
+        benchRatio: [0.75, 1.00, 1.25, 1.55, 1.90],
+        eventThree: [3, 8, 13, 18, 25],
         carrySec: [25, 50, 80, 120, 180],
-        mileSec: [525, 460, 400, 350, 300]
+        runSec: [870, 750, 645, 570, 495]
       },
       female: {
         squatRatio: [0.65, 0.95, 1.25, 1.55, 1.90],
-        pullups: [1, 4, 8, 12, 18],
+        benchRatio: [0.45, 0.65, 0.85, 1.10, 1.35],
+        eventThree: [20, 40, 70, 110, 160],
         carrySec: [25, 50, 85, 130, 190],
-        mileSec: [600, 525, 460, 400, 340]
+        runSec: [990, 840, 720, 630, 555]
       }
-    };
-
-    const BAND_MULTIPLIERS = {
-      strict: 1.0,
-      light: 0.8,
-      medium: 0.6,
-      heavy: 0.4
     };
 
     function clamp(value, min, max) {
@@ -555,62 +732,64 @@
       const sex = document.getElementById("sex").value;
       const bw = parseFloat(document.getElementById("bodyweight").value);
       const squat = parseFloat(document.getElementById("squat").value);
-      const pullupsRaw = parseFloat(document.getElementById("pullups").value);
-      const band = document.getElementById("pullupBand").value;
+      const bench = parseFloat(document.getElementById("bench").value);
+      const eventThreeRaw = parseFloat(document.getElementById("pullups").value);
       const carry = parseFloat(document.getElementById("carry").value);
       const mileMin = parseFloat(document.getElementById("mileMin").value);
       const mileSec = parseFloat(document.getElementById("mileSec").value);
-      const consistency = parseFloat(document.getElementById("consistency").value) || 0;
 
       const table = TABLES[sex];
 
       const squatRatio = (bw > 0 && squat > 0) ? squat / bw : null;
-      const adjustedPullups = (pullupsRaw >= 0) ? pullupsRaw * BAND_MULTIPLIERS[band] : null;
+      const benchRatio = (bw > 0 && bench > 0) ? bench / bw : null;
+      const eventThreeValue = (!Number.isNaN(eventThreeRaw) && eventThreeRaw >= 0) ? eventThreeRaw : null;
       const mileTotalSec = (!Number.isNaN(mileMin) && !Number.isNaN(mileSec)) ? (mileMin * 60 + mileSec) : null;
 
       const squatScore = squatRatio ? interpolateScore(squatRatio, table.squatRatio, true) : 0;
-      const pullupScore = adjustedPullups !== null ? interpolateScore(adjustedPullups, table.pullups, true) : 0;
+      const benchScore = benchRatio ? interpolateScore(benchRatio, table.benchRatio, true) : 0;
+      const eventThreeScore = eventThreeValue !== null ? interpolateScore(eventThreeValue, table.eventThree, true) : 0;
       const carryScore = carry ? interpolateScore(carry, table.carrySec, true) : 0;
-      const mileScore = mileTotalSec ? interpolateScore(-mileTotalSec, table.mileSec.map(v => -v), true) : 0;
-      const consistencyScore = clamp(consistency, 0, 100);
+      const mileScore = mileTotalSec ? interpolateScore(-mileTotalSec, table.runSec.map(v => -v), true) : 0;
 
       const totalScore = (
         0.2 * squatScore +
-        0.2 * pullupScore +
+        0.2 * benchScore +
+        0.2 * eventThreeScore +
         0.2 * carryScore +
-        0.2 * mileScore +
-        0.2 * consistencyScore
+        0.2 * mileScore
       );
 
       document.getElementById("squatScore").textContent = round1(squatScore);
-      document.getElementById("pullupScore").textContent = round1(pullupScore);
+      document.getElementById("benchScore").textContent = round1(benchScore);
+      document.getElementById("eventThreeScore").textContent = round1(eventThreeScore);
       document.getElementById("carryScore").textContent = round1(carryScore);
       document.getElementById("mileScore").textContent = round1(mileScore);
-      document.getElementById("consistencyScore").textContent = round1(consistencyScore);
       document.getElementById("totalScore").textContent = round1(totalScore);
+
+      document.getElementById("eventThreeTitle").textContent = sex === "male" ? "Pull-ups" : "Dead-Bar Hang";
 
       document.getElementById("squatMeta").textContent =
         squatRatio ? `Ratio: ${squatRatio.toFixed(2)} x BW` : "Enter squat and bodyweight";
 
-      document.getElementById("pullupMeta").textContent =
-        adjustedPullups !== null
-          ? `Adjusted reps: ${adjustedPullups.toFixed(1)} (${band})`
-          : "Enter pull-up result";
+      document.getElementById("benchMeta").textContent =
+        benchRatio ? `Ratio: ${benchRatio.toFixed(2)} x BW` : "Enter bench and bodyweight";
+
+      document.getElementById("eventThreeMeta").textContent =
+        eventThreeValue !== null
+          ? (sex === "male" ? `Strict reps: ${eventThreeValue}` : `Dead-bar hang: ${eventThreeValue} sec`)
+          : "Men: pull-ups. Women: dead-bar hang.";
 
       document.getElementById("carryMeta").textContent =
-        carry ? `Hold time: ${carry} sec` : (sex === "male" ? "Men: 2 x 53 lb" : "Women: 2 x 35 lb");
+        carry ? `Hold time: ${carry} sec` : (sex === "male" ? "Men: 2 x 24 kg / 53 lb" : "Women: 2 x 16 kg / 35 lb");
 
       document.getElementById("mileMeta").textContent =
-        mileTotalSec ? `Mile time: ${formatTime(mileTotalSec)}` : "Enter mile time";
-
-      document.getElementById("consistencyMeta").textContent =
-        `Manual score: ${round1(consistencyScore)} / 100`;
+        mileTotalSec ? `1.64-mile time: ${formatTime(mileTotalSec)}` : "Enter 1.64-mile time";
 
       updateBar("squatBar", squatScore);
-      updateBar("pullupBar", pullupScore);
+      updateBar("benchBar", benchScore);
+      updateBar("eventThreeBar", eventThreeScore);
       updateBar("carryBar", carryScore);
       updateBar("mileBar", mileScore);
-      updateBar("consistencyBar", consistencyScore);
     }
 
     function getFormData() {
@@ -619,12 +798,11 @@
         sex: document.getElementById("sex").value,
         bodyweight: document.getElementById("bodyweight").value,
         squat: document.getElementById("squat").value,
+        bench: document.getElementById("bench").value,
         pullups: document.getElementById("pullups").value,
-        pullupBand: document.getElementById("pullupBand").value,
         carry: document.getElementById("carry").value,
         mileMin: document.getElementById("mileMin").value,
-        mileSec: document.getElementById("mileSec").value,
-        consistency: document.getElementById("consistency").value
+        mileSec: document.getElementById("mileSec").value
       };
     }
 
@@ -634,12 +812,11 @@
       document.getElementById("sex").value = data.sex || "male";
       document.getElementById("bodyweight").value = data.bodyweight || "";
       document.getElementById("squat").value = data.squat || "";
+      document.getElementById("bench").value = data.bench || "";
       document.getElementById("pullups").value = data.pullups || "";
-      document.getElementById("pullupBand").value = data.pullupBand || "strict";
       document.getElementById("carry").value = data.carry || "";
       document.getElementById("mileMin").value = data.mileMin || "";
       document.getElementById("mileSec").value = data.mileSec || "";
-      document.getElementById("consistency").value = data.consistency || "0";
     }
 
     function saveToLocal() {
@@ -650,7 +827,6 @@
     function loadFromLocal() {
       const saved = localStorage.getItem("heatIndexForm");
       if (!saved) {
-        alert("No saved inputs found.");
         return;
       }
       setFormData(JSON.parse(saved));
@@ -660,13 +836,39 @@
     function clearForm() {
       setFormData({});
       document.getElementById("sex").value = "male";
-      document.getElementById("consistency").value = "0";
       calculateScore();
     }
+
+    function showPage(pageName) {
+      document.querySelectorAll(".page").forEach((page) => {
+        page.classList.remove("active");
+      });
+
+      document.querySelectorAll(".tab-btn").forEach((button) => {
+        button.classList.remove("active");
+      });
+
+      const targetPage = document.getElementById(`page-${pageName}`);
+      const targetButton = document.querySelector(`.tab-btn[data-page="${pageName}"]`);
+
+      if (targetPage) targetPage.classList.add("active");
+      if (targetButton) targetButton.classList.add("active");
+    }
+
+    document.querySelectorAll(".tab-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        showPage(button.dataset.page);
+      });
+    });
+
+    document.getElementById("sex").addEventListener("change", () => {
+      calculateScore();
+    });
 
     window.addEventListener("load", () => {
       loadFromLocal();
       calculateScore();
+      showPage("home");
     });
   </script>
 </body>
