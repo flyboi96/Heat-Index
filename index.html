@@ -569,7 +569,7 @@
           </div>
           <div class="field">
             <label for="sex">Sex</label>
-            <select id="sex">
+            <select id="sex" disabled>
               <option value="male">Male</option>
               <option value="female">Female</option>
             </select>
@@ -689,7 +689,7 @@
           </div>
         </div>
       </section>
-
+      </div>
     </div>
   </div>
 
@@ -714,6 +714,15 @@
         runSec: [990, 840, 720, 630, 555]
       }
     };
+
+    const SEX_BY_LAST_NAME = {
+      Snyder: "female",
+      Mahrlig: "female"
+    };
+
+    function getSexForLastName(lastName) {
+      return SEX_BY_LAST_NAME[lastName] || "male";
+    }
 
     const FIREBASE_CONFIG = {
       apiKey: "AIzaSyArKbnGgpccWyBqK9jfU3s9l09Kw8h_rZI",
@@ -895,7 +904,7 @@
     function setFormData(data) {
       if (!data) return;
       document.getElementById("lastName").value = data.lastName || "";
-      document.getElementById("sex").value = data.sex || "male";
+      document.getElementById("sex").value = data.lastName ? getSexForLastName(data.lastName) : (data.sex || "male");
       document.getElementById("bodyweight").value = data.bodyweight || "";
       document.getElementById("squat").value = data.squat || "";
       document.getElementById("bench").value = data.bench || "";
@@ -929,7 +938,7 @@
 
       const updates = {
         lastName,
-        sex: formData.sex || existing.sex || "male",
+        sex: getSexForLastName(lastName),
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       };
 
@@ -1140,12 +1149,20 @@
       });
     });
 
+    document.getElementById("lastName").addEventListener("change", () => {
+      const lastName = document.getElementById("lastName").value;
+      document.getElementById("sex").value = getSexForLastName(lastName);
+      calculateScore();
+    });
+
     document.getElementById("sex").addEventListener("change", () => {
       calculateScore();
     });
 
     window.addEventListener("load", () => {
       loadFromLocal();
+      const lastName = document.getElementById("lastName").value;
+      document.getElementById("sex").value = getSexForLastName(lastName);
       calculateScore();
       showPage("home");
       loadLeaderboard();
