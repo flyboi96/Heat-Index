@@ -334,7 +334,7 @@
         <section class="card">
           <h2>Challenge Overview</h2>
           <ol class="instructions-list">
-            <li>Test five events: squat, bench, pull-ups / dead-bar hang, farmer hold, and the 1.64-mile run.</li>
+            <li>Test five events: squat, bench, pull-ups / dead-bar hang, farmer hold, and the 1.64-mile run / 2000m row.</li>
             <li>Only scores achieved during this deployment count toward the challenge.</li>
             <li>Each event is worth 20 percent. Strong across all five beats being elite at just one.</li>
             <li>No single test day. Log a PR whenever you earn one.</li>
@@ -375,7 +375,7 @@
             <li>Strength events (squat and bench) are scored as 3RM divided by bodyweight.</li>
             <li>Pull-Ups / Dead-Bar Hang: men perform strict pull-ups, women perform a dead-bar hang.</li>
             <li>Farmer hold: 2 x 24 kg / 53 lb (men), 2 x 16 kg / 35 lb (women).</li>
-            <li>Run: 1.64 miles total. One out-and-back (0.82) completed twice.</li>
+            <li>Conditioning event: 1.64-mile run or 2000m row. Use whichever gives the higher score.</li>
             <li>Each event is worth 20 points per tier: Cub 20, Gazelle 40, Leopard 60, Lion 80, Mamba 100.</li>
             <li>No ceiling. Scores continue past Elite. Keep pushing.</li>
           </ol>
@@ -389,6 +389,8 @@
             <li>Pull-ups: dead hang to chin clearly over bar. No kipping.</li>
             <li>Dead-bar hang: full grip, feet off ground, no touching down.</li>
             <li>Farmer hold: stand tall, no resting on legs, ends when one bell touches down.</li>
+            <li>Run / row: No stopping the clock until the event is complete.</li>
+
           </ol>
         </section>
 
@@ -458,6 +460,14 @@
                   <td>10:15 (6:15/mi)</td>
                   <td>9:00 (5:29/mi)</td>
                 </tr>
+                <tr>
+                  <td>2000m Row</td>
+                  <td>12:30</td>
+                  <td>10:15</td>
+                  <td>8:50</td>
+                  <td>7:50</td>
+                  <td>7:10</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -518,6 +528,14 @@
                   <td>13:00 (7:56/mi)</td>
                   <td>11:30 (7:01/mi)</td>
                   <td>10:15 (6:15/mi)</td>
+                </tr>
+                <tr>
+                  <td>2000m Row</td>
+                  <td>14:30</td>
+                  <td>12:00</td>
+                  <td>10:30</td>
+                  <td>9:20</td>
+                  <td>8:35</td>
                 </tr>
               </tbody>
             </table>
@@ -609,7 +627,7 @@
 
         <div class="row">
           <div class="field">
-            <label for="mileMin">1.64-Mile Time</label>
+            <label for="mileMin">1.64-Mile Run Time</label>
             <div class="row">
               <div class="field" style="margin-bottom:0;">
                 <input id="mileMin" type="number" min="0" step="1" placeholder="10" />
@@ -617,6 +635,19 @@
               </div>
               <div class="field" style="margin-bottom:0;">
                 <input id="mileSec" type="number" min="0" max="59" step="1" placeholder="45" />
+                <label class="small">Seconds</label>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label for="rowMin">2000m Row Time</label>
+            <div class="row">
+              <div class="field" style="margin-bottom:0;">
+                <input id="rowMin" type="number" min="0" step="1" placeholder="8" />
+                <label class="small">Minutes</label>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <input id="rowSec" type="number" min="0" max="59" step="1" placeholder="50" />
                 <label class="small">Seconds</label>
               </div>
             </div>
@@ -683,11 +714,11 @@
 
           <div class="result-item">
             <div class="result-top">
-              <div class="result-title">1.64-Mile Run</div>
+              <div class="result-title">Run / Row</div>
               <div class="result-score" id="mileScore">0.0</div>
             </div>
             <div class="bar"><div class="bar-fill" id="mileBar"></div></div>
-            <div class="small" id="mileMeta">Enter 1.64-mile time</div>
+            <div class="small" id="mileMeta">Enter a 1.64-mile run time, a 2000m row time, or both.</div>
           </div>
         </div>
       </section>
@@ -706,14 +737,16 @@
         benchRatio: [0.55, 0.80, 1.05, 1.25, 1.45],
         eventThree: [1, 5, 10, 14, 18],
         carrySec: [15, 35, 60, 85, 120],
-        runSec: [960, 825, 705, 615, 540]
+        runSec: [960, 825, 705, 615, 540],
+        rowSec: [750, 615, 530, 470, 430]
       },
       female: {
         squatRatio: [0.50, 0.75, 1.00, 1.20, 1.45],
         benchRatio: [0.30, 0.50, 0.70, 0.85, 1.00],
         eventThree: [10, 25, 50, 75, 110],
         carrySec: [15, 35, 65, 90, 125],
-        runSec: [1080, 915, 780, 690, 615]
+        runSec: [1080, 915, 780, 690, 615],
+        rowSec: [870, 720, 630, 560, 515]
       }
     };
 
@@ -757,17 +790,23 @@
       const carry = parseOptionalNumber(values.carry);
       const mileMin = parseOptionalNumber(values.mileMin);
       const mileSec = parseOptionalNumber(values.mileSec);
+      const rowMin = parseOptionalNumber(values.rowMin);
+      const rowSec = parseOptionalNumber(values.rowSec);
 
       const squatRatio = (bw > 0 && squat > 0) ? squat / bw : null;
       const benchRatio = (bw > 0 && bench > 0) ? bench / bw : null;
       const eventThreeValue = eventThreeRaw !== null && eventThreeRaw >= 0 ? eventThreeRaw : null;
       const mileTotalSec = (mileMin !== null && mileSec !== null) ? (mileMin * 60 + mileSec) : null;
+      const rowTotalSec = (rowMin !== null && rowSec !== null) ? (rowMin * 60 + rowSec) : null;
 
       const squatScore = squatRatio ? interpolateScore(squatRatio, table.squatRatio, true) : 0;
       const benchScore = benchRatio ? interpolateScore(benchRatio, table.benchRatio, true) : 0;
       const eventThreeScore = eventThreeValue !== null ? interpolateScore(eventThreeValue, table.eventThree, true) : 0;
       const carryScore = carry ? interpolateScore(carry, table.carrySec, true) : 0;
-      const mileScore = mileTotalSec ? interpolateScore(-mileTotalSec, table.runSec.map(v => -v), true) : 0;
+      const runScore = mileTotalSec ? interpolateScore(-mileTotalSec, table.runSec.map(v => -v), true) : 0;
+      const rowScore = rowTotalSec ? interpolateScore(-rowTotalSec, table.rowSec.map(v => -v), true) : 0;
+      const mileScore = Math.max(runScore, rowScore);
+      const conditioningMode = mileScore === 0 ? null : (runScore >= rowScore ? "run" : "row");
 
       const totalScore = (
         0.2 * squatScore +
@@ -787,7 +826,11 @@
         squatRatio,
         benchRatio,
         eventThreeValue,
-        mileTotalSec
+        mileTotalSec,
+        rowTotalSec,
+        runScore,
+        rowScore,
+        conditioningMode
       };
     }
 
@@ -844,6 +887,8 @@
       const carry = parseFloat(document.getElementById("carry").value);
       const mileMin = parseFloat(document.getElementById("mileMin").value);
       const mileSec = parseFloat(document.getElementById("mileSec").value);
+      const rowMin = parseFloat(document.getElementById("rowMin").value);
+      const rowSec = parseFloat(document.getElementById("rowSec").value);
 
       const scores = computeScoresFromValues({
         sex,
@@ -853,7 +898,9 @@
         pullups: eventThreeRaw,
         carry,
         mileMin,
-        mileSec
+        mileSec,
+        rowMin,
+        rowSec
       });
 
       document.getElementById("squatScore").textContent = round1(scores.squatScore);
@@ -880,7 +927,11 @@
         carry ? `Hold time: ${carry} sec` : (sex === "male" ? "Men: 2 x 24 kg / 53 lb" : "Women: 2 x 16 kg / 35 lb");
 
       document.getElementById("mileMeta").textContent =
-        scores.mileTotalSec ? `1.64-mile time: ${formatTime(scores.mileTotalSec)}` : "Enter 1.64-mile time";
+        scores.conditioningMode === "run"
+          ? `Using run: ${formatTime(scores.mileTotalSec)} (${round1(scores.runScore)} pts)`
+          : scores.conditioningMode === "row"
+            ? `Using row: ${formatTime(scores.rowTotalSec)} (${round1(scores.rowScore)} pts)`
+            : "Enter a 1.64-mile run time, a 2000m row time, or both.";
 
       updateBar("squatBar", scores.squatScore);
       updateBar("benchBar", scores.benchScore);
@@ -899,7 +950,9 @@
         pullups: document.getElementById("pullups").value,
         carry: document.getElementById("carry").value,
         mileMin: document.getElementById("mileMin").value,
-        mileSec: document.getElementById("mileSec").value
+        mileSec: document.getElementById("mileSec").value,
+        rowMin: document.getElementById("rowMin").value,
+        rowSec: document.getElementById("rowSec").value
       };
     }
 
@@ -914,6 +967,8 @@
       document.getElementById("carry").value = data.carry || "";
       document.getElementById("mileMin").value = data.mileMin || "";
       document.getElementById("mileSec").value = data.mileSec || "";
+      document.getElementById("rowMin").value = data.rowMin || "";
+      document.getElementById("rowSec").value = data.rowSec || "";
     }
 
     function saveToLocal() {
@@ -944,7 +999,7 @@
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       };
 
-      ["bodyweight", "squat", "bench", "pullups", "carry", "mileMin", "mileSec"].forEach((key) => {
+      ["bodyweight", "squat", "bench", "pullups", "carry", "mileMin", "mileSec", "rowMin", "rowSec"].forEach((key) => {
         if (formData[key] !== "") {
           updates[key] = formData[key];
         }
@@ -982,7 +1037,10 @@
         const carry = parseOptionalNumber(data.carry);
         const mileMin = parseOptionalNumber(data.mileMin);
         const mileSec = parseOptionalNumber(data.mileSec);
+        const rowMin = parseOptionalNumber(data.rowMin);
+        const rowSec = parseOptionalNumber(data.rowSec);
         const mileTotalSec = (mileMin !== null && mileSec !== null) ? (mileMin * 60 + mileSec) : null;
+        const rowTotalSec = (rowMin !== null && rowSec !== null) ? (rowMin * 60 + rowSec) : null;
 
         rows.push({
           lastName: data.lastName || doc.id,
@@ -1002,9 +1060,13 @@
           carryRaw: carry !== null ? `${carry} sec` : "-",
           carryScore: round1(scores.carryScore),
           carryValue: carry !== null ? carry : null,
-          mileRaw: mileTotalSec !== null ? formatTime(mileTotalSec) : "-",
+          mileRaw: scores.conditioningMode === "run"
+            ? `Run ${formatTime(mileTotalSec)}`
+            : scores.conditioningMode === "row"
+              ? `Row ${formatTime(rowTotalSec)}`
+              : "-",
           mileScore: round1(scores.mileScore),
-          mileValue: mileTotalSec !== null ? mileTotalSec : null
+          mileValue: scores.mileScore > 0 ? scores.mileScore : null
         });
       });
 
