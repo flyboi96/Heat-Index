@@ -1060,10 +1060,15 @@
           carryRaw: carry !== null ? `${carry} sec` : "-",
           carryScore: round1(scores.carryScore),
           carryValue: carry !== null ? carry : null,
-          mileRaw: scores.conditioningMode === "run"
-            ? `Run ${formatTime(mileTotalSec)}`
+          cardioMode: scores.conditioningMode === "run"
+            ? "Run"
             : scores.conditioningMode === "row"
-              ? `Row ${formatTime(rowTotalSec)}`
+              ? "Row"
+              : "-",
+          mileRaw: scores.conditioningMode === "run"
+            ? formatTime(mileTotalSec)
+            : scores.conditioningMode === "row"
+              ? formatTime(rowTotalSec)
               : "-",
           mileScore: round1(scores.mileScore),
           mileValue: scores.mileScore > 0 ? scores.mileScore : null
@@ -1089,7 +1094,7 @@
               <th>Bench</th>
               <th>Pull-Ups / Dead-Bar Hang</th>
               <th>Farmer</th>
-              <th>Run</th>
+              <th>Cardio</th>
             </tr>
           </thead>
           <tbody>
@@ -1134,6 +1139,7 @@
                     <th>Rank</th>
                     <th>Last Name</th>
                     <th>Sex</th>
+                    <th>Mode</th>
                     <th>Result</th>
                     <th>Points</th>
                   </tr>
@@ -1147,6 +1153,7 @@
               <td>${index + 1}</td>
               <td>${row.lastName}</td>
               <td>${row.sex === "male" ? "M" : "F"}</td>
+              <td>${title === 'Cardio Leaderboard' ? (row.cardioMode || '-') : '-'}</td>
               <td>${row[rawKey]}</td>
               <td>${row[scoreKey]}</td>
             </tr>
@@ -1168,7 +1175,7 @@
       html += makeEventTable('Bench Leaderboard', 'benchValue', 'benchRaw', 'benchScore');
       html += makeEventTable('Pull-Ups / Dead-Bar Hang Leaderboard', 'eventThreeValue', 'eventThreeRaw', 'eventThreeScore');
       html += makeEventTable('Farmer Hold Leaderboard', 'carryValue', 'carryRaw', 'carryScore');
-      html += makeEventTable('Run Leaderboard', 'mileValue', 'mileRaw', 'mileScore');
+      html += makeEventTable('Cardio Leaderboard', 'mileValue', 'mileRaw', 'mileScore');
       container.innerHTML = html;
     }
 
