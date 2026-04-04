@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Heat Index</title>
+  <title>Heat Index Challenge</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -303,6 +303,59 @@
       font-size: 0.92rem;
     }
 
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(245,158,11,0.35);
+      background: rgba(245,158,11,0.10);
+      color: #fbbf24;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .badge-row {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .place-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      border: 1px solid var(--border);
+      background: var(--card-2);
+      color: var(--text);
+    }
+
+    .place-gold {
+      background: rgba(245, 158, 11, 0.18);
+      border-color: rgba(245, 158, 11, 0.45);
+      color: #fbbf24;
+    }
+
+    .place-silver {
+      background: rgba(148, 163, 184, 0.16);
+      border-color: rgba(148, 163, 184, 0.40);
+      color: #cbd5e1;
+    }
+
+    .place-bronze {
+      background: rgba(180, 83, 9, 0.18);
+      border-color: rgba(180, 83, 9, 0.45);
+      color: #fdba74;
+    }
+
 
     @media (max-width: 600px) {
       .row {
@@ -318,7 +371,7 @@
 <body>
   <div class="container">
     <section class="hero">
-      <h1 class="title">Heat Index</h1>
+      <h1 class="title">Heat Index Challenge</h1>
       <p class="subtitle">Track strength, conditioning, and performance. Log PRs anytime. Build your score. Compete in the heat.</p>
       <div class="tabs">
         <button class="tab-btn active" type="button" data-page="home">Overview</button>
@@ -404,6 +457,10 @@
 
     <div id="page-scorechart" class="page">
       <div class="grid">
+        <section class="card">
+          <h2>Why This Scale</h2>
+          <p class="small">These standards are built to reward balanced fitness across strength, grip, upper-body endurance, and conditioning — not just one specialty.</p>
+        </section>
         <section class="card">
           <h2>Male Tier Table</h2>
           <p class="small">Points by tier: Cub = 20, Gazelle = 40, Leopard = 60, Lion = 80, Mamba = 100</p>
@@ -548,7 +605,9 @@
       <div class="grid">
         <section class="card">
           <h2>Leaderboard</h2>
-          <p class="small">Live PR totals from Firebase. Missing events count as zero until a PR is uploaded. Event-specific leaderboards are listed below the overall Heat Index rankings.</p>
+          <p class="small">Missing events count as zero until a PR is uploaded. Event-specific leaderboards are listed below the overall Heat Index rankings.</p>
+          <p class="small">Overall leaderboard ranks by total Heat Index. Event leaderboards rank by event points.</p>
+          <p class="small" id="leaderboardUpdatedAt">Last updated: loading...</p>
           <div id="leaderboardContent" class="table-wrap">
             <p class="small">Add your Firebase config in the script block to enable the live leaderboard.</p>
           </div>
@@ -615,6 +674,7 @@
           <div class="field">
             <label for="eventThree">Pull-ups / Hang</label>
             <input id="pullups" type="number" min="0" step="1" placeholder="12" />
+            <div class="small">Men: strict reps | Women: dead-bar hang time</div>
           </div>
         </div>
 
@@ -673,6 +733,9 @@
         <div class="summary">
           <p class="total" id="totalScore">0.0</p>
           <div class="label">Total Heat Index Score</div>
+          <div class="badge-row">
+            <div class="badge" id="cardioBadge">Cardio used: —</div>
+          </div>
         </div>
 
         <div class="results" style="margin-top:14px;">
@@ -848,6 +911,13 @@
       return `${min}:${String(sec).padStart(2, "0")}`;
     }
 
+    function rankBadge(index) {
+      if (index === 0) return '<span class="place-badge place-gold">1</span>';
+      if (index === 1) return '<span class="place-badge place-silver">2</span>';
+      if (index === 2) return '<span class="place-badge place-bronze">3</span>';
+      return `${index + 1}`;
+    }
+
     function interpolateScore(value, thresholds, higherIsBetter = true) {
       if (value === null || Number.isNaN(value)) return 0;
 
@@ -932,6 +1002,13 @@
           : scores.conditioningMode === "row"
             ? `Using row: ${formatTime(scores.rowTotalSec)} (${round1(scores.rowScore)} pts)`
             : "Enter a 1.64-mile run time, a 2000m row time, or both.";
+
+      document.getElementById("cardioBadge").textContent =
+        scores.conditioningMode === "run"
+          ? "Cardio used: Run"
+          : scores.conditioningMode === "row"
+            ? "Cardio used: Row"
+            : "Cardio used: —";
 
       updateBar("squatBar", scores.squatScore);
       updateBar("benchBar", scores.benchScore);
@@ -1018,7 +1095,10 @@
       const container = document.getElementById("leaderboardContent");
       if (!container) return;
 
+      const updatedEl = document.getElementById("leaderboardUpdatedAt");
+
       if (!HAS_FIREBASE_CONFIG || !db) {
+        if (updatedEl) updatedEl.textContent = "Last updated: Firebase not connected";
         container.innerHTML = '<p class="small">Add your Firebase config in the script block to enable the live leaderboard.</p>';
         return;
       }
@@ -1046,6 +1126,7 @@
           lastName: data.lastName || doc.id,
           totalScore: round1(scores.totalScore),
           sex: data.sex || "male",
+          updatedAt: data.updatedAt && data.updatedAt.toDate ? data.updatedAt.toDate() : null,
           squatRaw: (squat !== null && bodyweight > 0) ? `${squat} lb (${scores.squatRatio.toFixed(2)}x)` : "-",
           squatScore: round1(scores.squatScore),
           squatValue: scores.squatRatio !== null ? scores.squatRatio : null,
@@ -1077,7 +1158,20 @@
 
       rows.sort((a, b) => b.totalScore - a.totalScore);
 
+      const latestUpdate = rows.reduce((latest, row) => {
+        if (!row.updatedAt) return latest;
+        if (!latest) return row.updatedAt;
+        return row.updatedAt > latest ? row.updatedAt : latest;
+      }, null);
+
+      if (updatedEl) {
+        updatedEl.textContent = latestUpdate
+          ? `Last updated: ${latestUpdate.toLocaleString()}`
+          : "Last updated: unknown";
+      }
+
       if (!rows.length) {
+        if (updatedEl) updatedEl.textContent = "Last updated: no PRs uploaded yet";
         container.innerHTML = '<p class="small">No PRs uploaded yet.</p>';
         return;
       }
@@ -1090,8 +1184,8 @@
               <th>Last Name</th>
               <th>Sex</th>
               <th>Heat Index</th>
-              <th>Squat</th>
-              <th>Bench</th>
+              <th>Squat 3RM</th>
+              <th>Bench 3RM</th>
               <th>Pull-Ups / Dead-Bar Hang</th>
               <th>Farmer</th>
               <th>Cardio</th>
@@ -1103,7 +1197,7 @@
       rows.forEach((row, index) => {
         html += `
           <tr>
-            <td>${index + 1}</td>
+            <td>${rankBadge(index)}</td>
             <td>${row.lastName}</td>
             <td>${row.sex === "male" ? "M" : "F"}</td>
             <td>${row.totalScore}</td>
@@ -1150,7 +1244,7 @@
         filtered.forEach((row, index) => {
           sectionHtml += `
             <tr>
-              <td>${index + 1}</td>
+              <td>${rankBadge(index)}</td>
               <td>${row.lastName}</td>
               <td>${row.sex === "male" ? "M" : "F"}</td>
               <td>${title === 'Cardio Leaderboard' ? (row.cardioMode || '-') : '-'}</td>
@@ -1171,8 +1265,8 @@
       };
 
       html += '</tbody></table>';
-      html += makeEventTable('Squat Leaderboard', 'squatValue', 'squatRaw', 'squatScore');
-      html += makeEventTable('Bench Leaderboard', 'benchValue', 'benchRaw', 'benchScore');
+      html += makeEventTable('Squat 3RM Leaderboard', 'squatValue', 'squatRaw', 'squatScore');
+      html += makeEventTable('Bench 3RM Leaderboard', 'benchValue', 'benchRaw', 'benchScore');
       html += makeEventTable('Pull-Ups / Dead-Bar Hang Leaderboard', 'eventThreeValue', 'eventThreeRaw', 'eventThreeScore');
       html += makeEventTable('Farmer Hold Leaderboard', 'carryValue', 'carryRaw', 'carryScore');
       html += makeEventTable('Cardio Leaderboard', 'mileValue', 'mileRaw', 'mileScore');
