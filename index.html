@@ -430,7 +430,7 @@
             <li>Farmer hold: 2 x 24 kg / 53 lb (men), 2 x 16 kg / 35 lb (women).</li>
             <li>Conditioning event: 1.64-mile run or 2000m row. Use whichever gives the higher score.</li>
             <li>Each event is worth 20 points per tier: Cub 20, Gazelle 40, Leopard 60, Lion 80, Mamba 100.</li>
-            <li>No ceiling. Scores continue past Elite. Keep pushing.</li>
+            <li>No ceiling. Scores continue past Mamba. Keep pushing.</li>
           </ol>
         </section>
 
@@ -1065,30 +1065,50 @@
         return;
       }
 
-      const docRef = db.collection("heatIndexPRs").doc(lastName.toLowerCase());
-      const snapshot = await docRef.get();
-      const existing = snapshot.exists ? snapshot.data() : {};
       const formData = getFormData();
+      const hasRunMin = formData.mileMin !== "";
+      const hasRunSec = formData.mileSec !== "";
+      const hasRowMin = formData.rowMin !== "";
+      const hasRowSec = formData.rowSec !== "";
 
-      const updates = {
-        lastName,
-        sex: getSexForLastName(lastName),
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      };
+      if (hasRunMin !== hasRunSec) {
+        alert("Enter both run minutes and run seconds, or leave both blank.");
+        return;
+      }
 
-      ["bodyweight", "squat", "bench", "pullups", "carry", "mileMin", "mileSec", "rowMin", "rowSec"].forEach((key) => {
-        if (formData[key] !== "") {
-          updates[key] = formData[key];
-        }
-      });
+      if (hasRowMin !== hasRowSec) {
+        alert("Enter both row minutes and row seconds, or leave both blank.");
+        return;
+      }
 
-      const merged = { ...existing, ...updates };
-      const scores = computeScoresFromValues(merged);
-      updates.totalScore = round1(scores.totalScore);
+      try {
+        const docRef = db.collection("heatIndexPRs").doc(lastName.toLowerCase());
+        const snapshot = await docRef.get();
+        const existing = snapshot.exists ? snapshot.data() : {};
 
-      await docRef.set(updates, { merge: true });
-      alert(`Uploaded PRs for ${lastName}.`);
-      loadLeaderboard();
+        const updates = {
+          lastName,
+          sex: getSexForLastName(lastName),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        ["bodyweight", "squat", "bench", "pullups", "carry", "mileMin", "mileSec", "rowMin", "rowSec"].forEach((key) => {
+          if (formData[key] !== "") {
+            updates[key] = formData[key];
+          }
+        });
+
+        const merged = { ...existing, ...updates };
+        const scores = computeScoresFromValues(merged);
+        updates.totalScore = round1(scores.totalScore);
+
+        await docRef.set(updates, { merge: true });
+        alert(`Uploaded PRs for ${lastName}.`);
+        loadLeaderboard();
+      } catch (error) {
+        console.error("Upload PRs failed:", error);
+        alert(`Upload failed: ${error.code || "unknown_error"}${error.message ? ` - ${error.message}` : ""}`);
+      }
     }
 
     async function loadLeaderboard() {
