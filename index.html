@@ -1225,7 +1225,7 @@
             <td>${row.benchRaw}<br><span class="small">${row.benchScore} pts</span></td>
             <td>${row.eventThreeRaw}<br><span class="small">${row.eventThreeScore} pts</span></td>
             <td>${row.carryRaw}<br><span class="small">${row.carryScore} pts</span></td>
-            <td>${row.mileRaw}<br><span class="small">${row.mileScore} pts</span></td>
+            <td>${row.cardioMode !== '-' ? row.cardioMode + ' ' : ''}${row.mileRaw}<br><span class="small">${row.mileScore} pts</span></td>
           </tr>
         `;
       });
@@ -1243,6 +1243,8 @@
           `;
         }
 
+        const isCardio = title === 'Cardio Leaderboard';
+
         let sectionHtml = `
           <section class="card">
             <h2>${title}</h2>
@@ -1253,7 +1255,7 @@
                     <th>Rank</th>
                     <th>Last Name</th>
                     <th>Sex</th>
-                    <th>Mode</th>
+                    ${isCardio ? '<th>Mode</th>' : ''}
                     <th>Result</th>
                     <th>Points</th>
                   </tr>
@@ -1267,7 +1269,7 @@
               <td>${rankBadge(index)}</td>
               <td>${row.lastName}</td>
               <td>${row.sex === "male" ? "M" : "F"}</td>
-              <td>${title === 'Cardio Leaderboard' ? (row.cardioMode || '-') : '-'}</td>
+              ${isCardio ? `<td>${row.cardioMode || '-'}</td>` : ''}
               <td>${row[rawKey]}</td>
               <td>${row[scoreKey]}</td>
             </tr>
