@@ -723,9 +723,8 @@
         </div>
 
         <p class="footer-note">
-          Preview Heat Index only shows your score on this page. Upload PRs to Leaderboard saves new PRs to Firebase. Blank fields do not overwrite old PRs when you upload.
+          Preview Heat Index only shows your score on this page. Upload PRs to Leaderboard saves new PRs to Firebase. Blank fields do not overwrite old PRs when you upload. April submissions close at 0000Z on 1 May 2026.
         </p>
-      </section>
 
       <section class="card">
         <h2>Score Summary</h2>
@@ -793,6 +792,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script>
     const POINT_ANCHORS = [20, 40, 60, 80, 100];
+    const APRIL_CHALLENGE_CUTOFF = new Date("2026-05-01T00:00:00Z");
 
     const TABLES = {
       male: {
@@ -1062,6 +1062,11 @@
       const lastName = document.getElementById("lastName").value.trim();
       if (!lastName) {
         alert("Select your last name before uploading.");
+        return;
+      }
+
+      if (new Date() >= APRIL_CHALLENGE_CUTOFF) {
+        alert("The April challenge closed at 0000Z on 1 May 2026. New submissions are locked.");
         return;
       }
 
