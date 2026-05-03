@@ -28,10 +28,35 @@ const TABLES = {
   }
 };
 
+const ROSTER_LAST_NAMES = [
+  "Aring",
+  "Corbin",
+  "Cowan",
+  "Dsouza",
+  "Harris",
+  "Mahrlig",
+  "Manley",
+  "Martindale",
+  "Milner",
+  "Naginis",
+  "Ortiz",
+  "Palmer",
+  "Rohrer",
+  "Semon",
+  "Snyder",
+  "Stewart",
+  "Wei"
+];
+
 const SEX_BY_LAST_NAME = {
   Snyder: "female",
   Mahrlig: "female"
 };
+
+function findRosterLastName(lastName) {
+  const normalized = String(lastName || "").trim().toLowerCase();
+  return ROSTER_LAST_NAMES.find((name) => name.toLowerCase() === normalized) || null;
+}
 
 function getSexForLastName(lastName) {
   return SEX_BY_LAST_NAME[lastName] || "male";
@@ -462,6 +487,63 @@ async function uploadPRs() {
 }
 
 // Leaderboards
+function createLeaderboardRow(data, lastName) {
+  const sex = getSexForLastName(lastName);
+  const rowData = { ...data, lastName, sex };
+  const scores = computeScoresFromValues(rowData);
+
+  const bodyweight = parseOptionalNumber(rowData.bodyweight);
+  const squat = parseOptionalNumber(rowData.squat);
+  const bench = parseOptionalNumber(rowData.bench);
+  const eventThree = parseOptionalNumber(rowData.pullups);
+  const eventThreeWeight = parseOptionalNumber(rowData.eventThreeWeight);
+  const dashSec = parseOptionalNumber(rowData.dashSec);
+  const mileMin = parseOptionalNumber(rowData.mileMin);
+  const mileSec = parseOptionalNumber(rowData.mileSec);
+  const rowMin = parseOptionalNumber(rowData.rowMin);
+  const rowSec = parseOptionalNumber(rowData.rowSec);
+  const mileTotalSec = (mileMin !== null && mileSec !== null) ? (mileMin * 60 + mileSec) : null;
+  const rowTotalSec = (rowMin !== null && rowSec !== null) ? (rowMin * 60 + rowSec) : null;
+
+  return {
+    lastName,
+    totalScore: round1(scores.totalScore),
+    sex,
+    updatedAt: rowData.updatedAt && rowData.updatedAt.toDate ? rowData.updatedAt.toDate() : null,
+    squatRaw: (squat !== null && bodyweight > 0) ? `${squat} lb (${scores.squatRatio.toFixed(2)} scaled)` : "-",
+    squatScore: round1(scores.squatScore),
+    squatValue: scores.squatRatio !== null ? scores.squatRatio : null,
+    benchRaw: (bench !== null && bodyweight > 0) ? `${bench} lb (${scores.benchRatio.toFixed(2)} scaled)` : "-",
+    benchScore: round1(scores.benchScore),
+    benchValue: scores.benchRatio !== null ? scores.benchRatio : null,
+    eventThreeRaw: eventThree !== null
+      ? formatEventThreeMeta(scores, sex)
+      : "-",
+    eventThreeScore: round1(scores.eventThreeScore),
+    eventThreeValue: scores.eventThreeAdjustedValue !== null ? scores.eventThreeAdjustedValue : null,
+    eventThreeWeight: eventThreeWeight !== null ? eventThreeWeight : null,
+    dashRaw: dashSec !== null ? `${dashSec.toFixed(2)} sec` : "-",
+    dashScore: round1(scores.dashScore),
+    dashValue: dashSec !== null ? dashSec : null,
+    cardioMode: scores.conditioningMode === "run"
+      ? "Run"
+      : scores.conditioningMode === "row"
+        ? "Row"
+        : "-",
+    mileRaw: scores.conditioningMode === "run"
+      ? formatTime(mileTotalSec)
+      : scores.conditioningMode === "row"
+        ? formatTime(rowTotalSec)
+        : "-",
+    mileScore: round1(scores.mileScore),
+    mileValue: scores.mileScore > 0 ? scores.mileScore : null
+  };
+}
+
+function createSeededLeaderboardRows() {
+  return ROSTER_LAST_NAMES.map((lastName) => createLeaderboardRow({}, lastName));
+}
+
 function getDivisionLabel(division) {
   if (division === "male") return "men";
   if (division === "female") return "women";
@@ -548,9 +630,7 @@ function renderLeaderboard() {
     return;
   }
 
-  const rankedRows = divisionRows
-    .filter((row) => row[config.valueKey] !== null && row[config.valueKey] !== undefined)
-    .sort((a, b) => b[config.scoreKey] - a[config.scoreKey]);
+  const rankedRows = [...divisionRows].sort((a, b) => b[config.scoreKey] - a[config.scoreKey]);
 
   if (!rankedRows.length) {
     if (summaryEl) summaryEl.textContent = `No ${config.label} PRs uploaded for ${divisionLabel}.`;
@@ -607,67 +687,29 @@ async function loadLeaderboard() {
 
   if (!HAS_FIREBASE_CONFIG || !db) {
     if (updatedEl) updatedEl.textContent = "Last updated: Firebase not connected";
-    leaderboardRows = [];
+    leaderboardRows = createSeededLeaderboardRows();
     const summaryEl = document.getElementById("leaderboardSummary");
-    if (summaryEl) summaryEl.textContent = "Live leaderboard needs Firebase connection.";
-    container.innerHTML = '<p class="small">Add your Firebase config in the script block to enable the live leaderboard.</p>';
+    renderLeaderboard();
+    if (summaryEl) summaryEl.textContent = "Showing roster defaults. Live leaderboard needs Firebase connection.";
     return;
   }
 
   const snapshot = await db.collection("heatIndexPRs").get();
-  const rows = [];
+  const rowsByLastName = new Map();
+
+  ROSTER_LAST_NAMES.forEach((lastName) => {
+    rowsByLastName.set(lastName, createLeaderboardRow({}, lastName));
+  });
 
   snapshot.forEach((doc) => {
     const data = doc.data();
-    const scores = computeScoresFromValues(data);
+    const lastName = findRosterLastName(data.lastName || doc.id);
+    if (!lastName) return;
 
-    const bodyweight = parseOptionalNumber(data.bodyweight);
-    const squat = parseOptionalNumber(data.squat);
-    const bench = parseOptionalNumber(data.bench);
-    const eventThree = parseOptionalNumber(data.pullups);
-    const eventThreeWeight = parseOptionalNumber(data.eventThreeWeight);
-    const dashSec = parseOptionalNumber(data.dashSec);
-    const mileMin = parseOptionalNumber(data.mileMin);
-    const mileSec = parseOptionalNumber(data.mileSec);
-    const rowMin = parseOptionalNumber(data.rowMin);
-    const rowSec = parseOptionalNumber(data.rowSec);
-    const mileTotalSec = (mileMin !== null && mileSec !== null) ? (mileMin * 60 + mileSec) : null;
-    const rowTotalSec = (rowMin !== null && rowSec !== null) ? (rowMin * 60 + rowSec) : null;
-
-    rows.push({
-      lastName: data.lastName || doc.id,
-      totalScore: round1(scores.totalScore),
-      sex: data.sex || "male",
-      updatedAt: data.updatedAt && data.updatedAt.toDate ? data.updatedAt.toDate() : null,
-      squatRaw: (squat !== null && bodyweight > 0) ? `${squat} lb (${scores.squatRatio.toFixed(2)} scaled)` : "-",
-      squatScore: round1(scores.squatScore),
-      squatValue: scores.squatRatio !== null ? scores.squatRatio : null,
-      benchRaw: (bench !== null && bodyweight > 0) ? `${bench} lb (${scores.benchRatio.toFixed(2)} scaled)` : "-",
-      benchScore: round1(scores.benchScore),
-      benchValue: scores.benchRatio !== null ? scores.benchRatio : null,
-      eventThreeRaw: eventThree !== null
-        ? formatEventThreeMeta(scores, data.sex || "male")
-        : "-",
-      eventThreeScore: round1(scores.eventThreeScore),
-      eventThreeValue: scores.eventThreeAdjustedValue !== null ? scores.eventThreeAdjustedValue : null,
-      eventThreeWeight: eventThreeWeight !== null ? eventThreeWeight : null,
-      dashRaw: dashSec !== null ? `${dashSec.toFixed(2)} sec` : "-",
-      dashScore: round1(scores.dashScore),
-      dashValue: dashSec !== null ? dashSec : null,
-      cardioMode: scores.conditioningMode === "run"
-        ? "Run"
-        : scores.conditioningMode === "row"
-          ? "Row"
-          : "-",
-      mileRaw: scores.conditioningMode === "run"
-        ? formatTime(mileTotalSec)
-        : scores.conditioningMode === "row"
-          ? formatTime(rowTotalSec)
-          : "-",
-      mileScore: round1(scores.mileScore),
-      mileValue: scores.mileScore > 0 ? scores.mileScore : null
-    });
+    rowsByLastName.set(lastName, createLeaderboardRow(data, lastName));
   });
+
+  const rows = ROSTER_LAST_NAMES.map((lastName) => rowsByLastName.get(lastName));
 
   rows.sort((a, b) => b.totalScore - a.totalScore);
 
@@ -680,12 +722,12 @@ async function loadLeaderboard() {
   if (updatedEl) {
     updatedEl.textContent = latestUpdate
       ? `Last updated: ${latestUpdate.toLocaleString()}`
-      : "Last updated: unknown";
+      : "Last updated: no PRs uploaded yet";
   }
 
   if (!rows.length) {
     if (updatedEl) updatedEl.textContent = "Last updated: no PRs uploaded yet";
-    leaderboardRows = [];
+    leaderboardRows = createSeededLeaderboardRows();
     renderLeaderboard();
     return;
   }
