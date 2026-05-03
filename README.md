@@ -11,7 +11,7 @@ Heat Index allows users to log performance across key events, convert results in
 - Squat (3RM with allometric bodyweight scaling)
 - Incline bench (3RM with allometric bodyweight scaling; women may use dumbbells)
 - Pull-ups / dead-bar hang with allometric bodyweight and added-load scaling
-- 40-yard dash
+- 40-meter dash
 - 1.64-mile run or 2000m row
 
 ## Features

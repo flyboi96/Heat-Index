@@ -79,7 +79,7 @@ const LEADERBOARD_VIEWS = {
     scoreKey: "eventThreeScore"
   },
   dash: {
-    label: "40-Yard Dash",
+    label: "40-Meter Dash",
     valueKey: "dashValue",
     rawKey: "dashRaw",
     scoreKey: "dashScore"
@@ -330,7 +330,7 @@ function calculateScore() {
       : "Men: pull-ups. Women: dead-bar hang.";
 
   document.getElementById("dashMeta").textContent =
-    scores.dashSec ? `Dash time: ${scores.dashSec.toFixed(2)} sec` : "Enter a 40-yard dash time.";
+    scores.dashSec ? `Dash time: ${scores.dashSec.toFixed(2)} sec` : "Enter a 40-meter dash time timed by another person.";
 
   document.getElementById("mileMeta").textContent =
     scores.conditioningMode === "run"
@@ -516,7 +516,7 @@ function renderLeaderboard() {
               <th>Squat 3RM</th>
               <th>Incline Bench 3RM</th>
               <th>Pull-Ups / Hang</th>
-              <th>40-Yard</th>
+              <th>40-Meter</th>
               <th>Cardio</th>
             </tr>
           </thead>

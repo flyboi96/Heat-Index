@@ -22,7 +22,7 @@
         <button class="tab-btn" type="button" data-page="scorechart">Standards</button>
         <button class="tab-btn" type="button" data-page="calculator">Score</button>
         <button class="tab-btn" type="button" data-page="leaderboard">Leaderboard</button>
-        <button class="tab-btn" type="button" data-page="mamba-prime">Mambra Prime</button>
+        <button class="tab-btn" type="button" data-page="mamba-prime">Mamba Prime</button>
       </div>
     </section>
 
@@ -31,7 +31,7 @@
         <section class="card">
           <h2>Challenge Overview</h2>
           <ol class="instructions-list">
-            <li>Test five events: squat, incline bench, pull-ups / dead-bar hang, 40-yard dash, and the 1.64-mile run / 2000m row.</li>
+            <li>Test five events: squat, incline bench, pull-ups / dead-bar hang, 40-meter dash, and the 1.64-mile run / 2000m row.</li>
             <li>Only scores achieved during this deployment count toward the challenge.</li>
             <li>Each event is evenly weighted. Strong across all five beats being elite at just one.</li>
             <li>No single test day. Log a PR whenever you earn one.</li>
@@ -72,7 +72,7 @@
             <li>Strength events (squat and incline bench) use allometric bodyweight scaling so heavier athletes are not required to lift pound-for-pound more.</li>
             <li>Incline bench can use a barbell. Women may use dumbbells; enter the total dumbbell load.</li>
             <li>Pull-Ups / Dead-Bar Hang: men perform strict pull-ups, women perform a dead-bar hang. Bodyweight and added weight count through the same allometric load scaling.</li>
-            <li>Speed / power event: 40-yard dash from a standing start.</li>
+            <li>Speed / power event: 40-meter dash from a standing start. Another person must time it.</li>
             <li>Conditioning event: 1.64-mile run or 2000m row. Use whichever gives the higher score. Row standards are intentionally tougher because the challenge prioritizes running in heat and field conditions.</li>
             <li>Each event is worth 20 points per tier: Cub 20, Gazelle 40, Leopard 60, Lion 80, Mamba 100.</li>
             <li>No ceiling. Scores continue past Mamba. Keep pushing.</li>
@@ -86,7 +86,7 @@
             <li>Incline bench: controlled lower, full lockout, and no excessive bounce. Dumbbell scores use combined dumbbell weight.</li>
             <li>Pull-ups: dead hang to chin clearly over bar. No kipping.</li>
             <li>Dead-bar hang: full grip, feet off ground, no touching down.</li>
-            <li>40-yard dash: standing start, full 40 yards, fastest clean time counts.</li>
+            <li>40-meter dash: another person must time it. Run the full distance between light poles on the running track.</li>
             <li>Run / row: No stopping the clock until the event is complete.</li>
 
           </ol>
@@ -102,20 +102,6 @@
 
     <div id="page-scorechart" class="page">
       <div class="grid">
-        <section class="card">
-          <h2>Why This Scale</h2>
-          <p class="small">These standards are built to reward balanced fitness across strength, grip, upper-body endurance, speed, and conditioning - not just one specialty.</p>
-        </section>
-        <section class="card">
-          <h2>Allometric Strength Scaling</h2>
-          <ol class="instructions-list">
-            <li>Reference bodyweight is 180 lb for men and 140 lb for women.</li>
-            <li>Allometric bodyweight = bodyweight^0.67 x reference bodyweight^0.33.</li>
-            <li>Squat and incline bench score value = lift divided by allometric bodyweight.</li>
-            <li>Pull-up / hang score value = actual result x (bodyweight + added weight) divided by allometric bodyweight.</li>
-          </ol>
-          <p class="source-note">Research basis: Folland, McCauley, and Williams recommend allometric scaling for comparing strength measures across body sizes in <a href="https://doi.org/10.1007/s00421-007-0654-x" target="_blank" rel="noopener noreferrer">European Journal of Applied Physiology, 2008</a>.</p>
-        </section>
         <section class="card standards-switch-card">
           <h2>Standards Table</h2>
           <div class="segmented-control" role="tablist" aria-label="Standards sex selector">
@@ -164,7 +150,7 @@
                   <td>18</td>
                 </tr>
                 <tr>
-                  <td>40-Yard Dash</td>
+                  <td>40-Meter Dash</td>
                   <td>6.50</td>
                   <td>5.80</td>
                   <td>5.20</td>
@@ -233,7 +219,7 @@
                   <td>110</td>
                 </tr>
                 <tr>
-                  <td>40-Yard Dash</td>
+                  <td>40-Meter Dash</td>
                   <td>7.20</td>
                   <td>6.50</td>
                   <td>5.90</td>
@@ -260,6 +246,20 @@
             </table>
           </div>
         </section>
+        <section class="card">
+          <h2>Why This Scale</h2>
+          <p class="small">These standards are built to reward balanced fitness across strength, grip, upper-body endurance, speed, and conditioning - not just one specialty.</p>
+        </section>
+        <section class="card">
+          <h2>Allometric Strength Scaling</h2>
+          <ol class="instructions-list">
+            <li>Reference bodyweight is 180 lb for men and 140 lb for women.</li>
+            <li>Allometric bodyweight = bodyweight^0.67 x reference bodyweight^0.33.</li>
+            <li>Squat and incline bench score value = lift divided by allometric bodyweight.</li>
+            <li>Pull-up / hang score value = actual result x (bodyweight + added weight) divided by allometric bodyweight.</li>
+          </ol>
+          <p class="source-note">Research basis: Folland, McCauley, and Williams recommend allometric scaling for comparing strength measures across body sizes in <a href="https://doi.org/10.1007/s00421-007-0654-x" target="_blank" rel="noopener noreferrer">European Journal of Applied Physiology, 2008</a>.</p>
+        </section>
       </div>
     </div>
 
@@ -278,7 +278,7 @@
                 <option value="squat">Squat 3RM</option>
                 <option value="bench">Incline Bench 3RM</option>
                 <option value="eventThree">Pull-Ups / Hang</option>
-                <option value="dash">40-Yard Dash</option>
+                <option value="dash">40-Meter Dash</option>
                 <option value="cardio">Run / Row</option>
               </select>
             </div>
@@ -304,7 +304,7 @@
         <section class="card champion-hero">
           <p class="champion-kicker">April Champion</p>
           <h2 class="champion-title">Jermaine Harris</h2>
-          <p class="champion-subtitle">Mambra Prime. King of the Heat.</p>
+          <p class="champion-subtitle">Mamba Prime. King of the Heat.</p>
           <img src="assets/images/Jermaine_Mamba_Prime.jpg" alt="Jermaine Harris, April Heat Index champion" class="champion-photo" />
           <div class="champion-stats">
             <div class="champion-stat">
@@ -312,7 +312,7 @@
               <span>Challenge Winner</span>
             </div>
             <div class="champion-stat">
-              <strong>Mambra</strong>
+              <strong>Mamba</strong>
               <span>Prime Title</span>
             </div>
             <div class="champion-stat">
@@ -414,7 +414,7 @@
           <section class="form-panel">
             <h3>Speed</h3>
             <div class="field field-tight">
-              <label for="dashSec">40-Yard Dash Time (sec)</label>
+              <label for="dashSec">40-Meter Dash Time (sec)</label>
               <input id="dashSec" type="number" min="0" step="0.01" placeholder="5.25" />
             </div>
           </section>
@@ -506,11 +506,11 @@
 
           <div class="result-item">
             <div class="result-top">
-              <div class="result-title">40-Yard Dash</div>
+              <div class="result-title">40-Meter Dash</div>
               <div class="result-score" id="dashScore">0.0</div>
             </div>
             <div class="bar"><div class="bar-fill" id="dashBar"></div></div>
-            <div class="small" id="dashMeta">Enter a 40-yard dash time.</div>
+            <div class="small" id="dashMeta">Enter a 40-meter dash time timed by another person.</div>
           </div>
 
           <div class="result-item">

@@ -645,6 +645,94 @@ th {
     grid-template-columns: 1fr;
   }
 
+  .segmented-control {
+    width: 100%;
+  }
+
+  .standards-switch-card {
+    padding: 12px;
+  }
+
+  .standards-panel .table-wrap {
+    overflow: visible;
+    border: 0;
+  }
+
+  .standards-panel table,
+  .standards-panel tbody,
+  .standards-panel tr,
+  .standards-panel td {
+    display: block;
+    width: 100%;
+  }
+
+  .standards-panel thead {
+    display: none;
+  }
+
+  .standards-panel tbody {
+    display: grid;
+    gap: 10px;
+  }
+
+  .standards-panel tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(36, 33, 29, 0.72);
+  }
+
+  .standards-panel td {
+    min-width: 0;
+    padding: 8px;
+    border: 0;
+    border-radius: 6px;
+    background: rgba(20, 18, 15, 0.72);
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .standards-panel td:first-child {
+    grid-column: 1 / -1;
+    padding: 0 0 4px;
+    background: transparent;
+    color: #fbbf24;
+    font-size: 0.98rem;
+    font-weight: 800;
+  }
+
+  .standards-panel td:not(:first-child)::before {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .standards-panel td:nth-child(2)::before {
+    content: "Cub";
+  }
+
+  .standards-panel td:nth-child(3)::before {
+    content: "Gazelle";
+  }
+
+  .standards-panel td:nth-child(4)::before {
+    content: "Leopard";
+  }
+
+  .standards-panel td:nth-child(5)::before {
+    content: "Lion";
+  }
+
+  .standards-panel td:nth-child(6)::before {
+    content: "Mamba";
+  }
+
   .mobile-score-dock {
     position: fixed;
     left: 12px;
