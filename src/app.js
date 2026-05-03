@@ -588,7 +588,7 @@ function renderLeaderboard() {
 
     let html = `
       <div class="table-wrap">
-        <table>
+        <table class="leaderboard-table leaderboard-overall-table">
           <thead>
             <tr>
               <th>Rank</th>
@@ -642,7 +642,7 @@ function renderLeaderboard() {
 
   let html = `
     <div class="table-wrap">
-      <table>
+      <table class="leaderboard-table leaderboard-event-table">
         <thead>
           <tr>
             <th>Rank</th>
