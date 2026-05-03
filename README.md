@@ -10,7 +10,7 @@ Heat Index allows users to log performance across key events, convert results in
 
 - Squat (3RM relative to bodyweight)
 - Incline bench (3RM relative to bodyweight; women may use dumbbells)
-- Pull-ups / dead-bar hang with optional added-load bonus
+- Pull-ups / dead-bar hang with capped bodyweight and added-load bonus
 - Farmer hold (fixed weight, time)
 - 40-yard dash
 - 1.64-mile run or 2000m row
