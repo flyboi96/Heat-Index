@@ -4,443 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Heat Index Challenge</title>
-  <link rel="icon" type="image/svg+xml" href="app-icon.svg" />
-  <link rel="icon" type="image/png" sizes="192x192" href="app-icon-192.png" />
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="icon" type="image/svg+xml" href="assets/icons/app-icon.svg" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/app-icon-192.png" />
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="site.webmanifest" />
   <meta name="theme-color" content="#f59e0b" />
-  <style>
-    :root {
-      --bg: #0f172a;
-      --card: #111827;
-      --card-2: #1f2937;
-      --text: #e5e7eb;
-      --muted: #94a3b8;
-      --accent: #f59e0b;
-      --good: #22c55e;
-      --border: #334155;
-      --danger: #ef4444;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: linear-gradient(180deg, #0b1220 0%, #111827 100%);
-      color: var(--text);
-      line-height: 1.4;
-    }
-
-    .container {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 16px;
-    }
-
-    .hero {
-      background: rgba(17, 24, 39, 0.92);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      margin-bottom: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-    }
-
-    .title {
-      margin: 0 0 6px;
-      font-size: 1.8rem;
-      font-weight: 800;
-      letter-spacing: 0.2px;
-    }
-
-    .subtitle {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
-
-    .tab-btn {
-      background: var(--card-2);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .tab-btn.active {
-      background: var(--accent);
-      color: #111827;
-      border-color: var(--accent);
-    }
-
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    .grid {
-      display: grid;
-      gap: 14px;
-    }
-
-    .card {
-      background: rgba(17, 24, 39, 0.96);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
-    }
-
-    .card h2 {
-      margin: 0 0 12px;
-      font-size: 1.05rem;
-    }
-
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .field {
-      margin-bottom: 12px;
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .field input,
-    .field select {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--card-2);
-      color: var(--text);
-      font-size: 1rem;
-      outline: none;
-    }
-
-    .field input:focus,
-    .field select:focus {
-      border-color: var(--accent);
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    button {
-      border: none;
-      border-radius: 12px;
-      padding: 12px 14px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #111827;
-    }
-
-    .btn-secondary {
-      background: var(--card-2);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .results {
-      display: grid;
-      gap: 10px;
-    }
-
-    .result-item {
-      background: var(--card-2);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px;
-    }
-
-    .result-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .result-title {
-      font-weight: 700;
-    }
-
-    .result-score {
-      font-weight: 800;
-      color: var(--accent);
-    }
-
-    .bar {
-      height: 10px;
-      background: #0b1220;
-      border-radius: 999px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-
-    .bar-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #f59e0b, #fbbf24);
-      transition: width 0.25s ease;
-    }
-
-    .summary {
-      text-align: center;
-      padding: 20px;
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(245,158,11,0.12), rgba(245,158,11,0.04));
-      border: 1px solid rgba(245,158,11,0.3);
-    }
-
-    .summary .total {
-      font-size: 2.2rem;
-      font-weight: 900;
-      margin: 0;
-      color: #fbbf24;
-    }
-
-    .summary .label {
-      margin-top: 4px;
-      color: var(--muted);
-    }
-
-    .small {
-      color: var(--muted);
-      font-size: 0.84rem;
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-
-    th, td {
-      border-bottom: 1px solid var(--border);
-      padding: 8px 6px;
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    th {
-      color: var(--muted);
-      font-weight: 700;
-    }
-
-    .footer-note {
-      color: var(--muted);
-      font-size: 0.82rem;
-      margin-top: 8px;
-    }
-
-    .route-img {
-      width: 100%;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      display: block;
-      margin-top: 12px;
-    }
-
-    .route-caption {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .instructions-list {
-      margin: 0;
-      padding-left: 18px;
-      color: var(--text);
-    }
-
-    .instructions-list li {
-      margin-bottom: 10px;
-    }
-
-    .callout {
-      background: rgba(245,158,11,0.08);
-      border: 1px solid rgba(245,158,11,0.28);
-      border-radius: 14px;
-      padding: 14px;
-    }
-
-    .callout h3 {
-      margin: 0 0 8px;
-      font-size: 0.98rem;
-    }
-
-    .callout p {
-      margin: 0;
-      color: var(--text);
-      font-size: 0.92rem;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(245,158,11,0.35);
-      background: rgba(245,158,11,0.10);
-      color: #fbbf24;
-      font-size: 0.82rem;
-      font-weight: 800;
-      letter-spacing: 0.2px;
-    }
-
-    .badge-row {
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .place-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 28px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: 0.2px;
-      border: 1px solid var(--border);
-      background: var(--card-2);
-      color: var(--text);
-    }
-
-    .place-gold {
-      background: rgba(245, 158, 11, 0.18);
-      border-color: rgba(245, 158, 11, 0.45);
-      color: #fbbf24;
-    }
-
-    .place-silver {
-      background: rgba(148, 163, 184, 0.16);
-      border-color: rgba(148, 163, 184, 0.40);
-      color: #cbd5e1;
-    }
-
-    .place-bronze {
-      background: rgba(180, 83, 9, 0.18);
-      border-color: rgba(180, 83, 9, 0.45);
-      color: #fdba74;
-    }
-
-    .champion-hero {
-      background:
-        linear-gradient(180deg, rgba(245,158,11,0.18), rgba(17, 24, 39, 0.98)),
-        rgba(17, 24, 39, 0.96);
-      border-color: rgba(245,158,11,0.35);
-    }
-
-    .champion-kicker {
-      margin: 0 0 8px;
-      color: #fbbf24;
-      font-size: 0.84rem;
-      font-weight: 900;
-      letter-spacing: 0.6px;
-      text-transform: uppercase;
-    }
-
-    .champion-title {
-      margin: 0;
-      font-size: clamp(2rem, 7vw, 3.4rem);
-      line-height: 0.95;
-      font-weight: 950;
-    }
-
-    .champion-subtitle {
-      margin: 12px 0 0;
-      color: var(--text);
-      font-size: 1rem;
-    }
-
-    .champion-photo {
-      width: 100%;
-      display: block;
-      border-radius: 16px;
-      border: 1px solid rgba(245,158,11,0.35);
-      margin-top: 14px;
-    }
-
-    .champion-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .champion-stat {
-      background: rgba(31,41,55,0.78);
-      border: 1px solid rgba(245,158,11,0.22);
-      border-radius: 14px;
-      padding: 12px;
-      text-align: center;
-    }
-
-    .champion-stat strong {
-      display: block;
-      color: #fbbf24;
-      font-size: 1.25rem;
-    }
-
-    .champion-stat span {
-      display: block;
-      color: var(--muted);
-      font-size: 0.76rem;
-      margin-top: 4px;
-    }
-
-
-    @media (max-width: 600px) {
-      .row {
-        grid-template-columns: 1fr;
-      }
-
-      .title {
-        font-size: 1.55rem;
-      }
-
-      .champion-stats {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="src/styles.css" />
 </head>
 <body>
   <div class="container">
@@ -462,9 +31,9 @@
         <section class="card">
           <h2>Challenge Overview</h2>
           <ol class="instructions-list">
-            <li>Test six events: squat, incline bench, pull-ups / dead-bar hang, farmer hold, 40-yard dash, and the 1.64-mile run / 2000m row.</li>
+            <li>Test five events: squat, incline bench, pull-ups / dead-bar hang, 40-yard dash, and the 1.64-mile run / 2000m row.</li>
             <li>Only scores achieved during this deployment count toward the challenge.</li>
-            <li>Each event is evenly weighted. Strong across all six beats being elite at just one.</li>
+            <li>Each event is evenly weighted. Strong across all five beats being elite at just one.</li>
             <li>No single test day. Log a PR whenever you earn one.</li>
           </ol>
         </section>
@@ -488,7 +57,7 @@
             <li>The early tiers are intentionally more attainable so people can get on the board fast and build momentum.</li>
             <li>Mamba is meant to be achievable for someone who is legitimately very fit out here, not just a specialist.</li>
             <li>You can score above Mamba, so there is always room to improve.</li>
-            <li>Your final Heat Index score is the average of all six event scores.</li>
+            <li>Your final Heat Index score is the average of all five event scores.</li>
           </ol>
         </section>
       </div>
@@ -503,7 +72,6 @@
             <li>Strength events (squat and incline bench) use allometric bodyweight scaling so heavier athletes are not required to lift pound-for-pound more.</li>
             <li>Incline bench can use a barbell. Women may use dumbbells; enter the total dumbbell load.</li>
             <li>Pull-Ups / Dead-Bar Hang: men perform strict pull-ups, women perform a dead-bar hang. Bodyweight and added weight count through the same allometric load scaling.</li>
-            <li>Farmer hold: 2 x 24 kg / 53 lb (men), 2 x 16 kg / 35 lb (women).</li>
             <li>Speed / power event: 40-yard dash from a standing start.</li>
             <li>Conditioning event: 1.64-mile run or 2000m row. Use whichever gives the higher score. Row standards are intentionally tougher because the challenge prioritizes running in heat and field conditions.</li>
             <li>Each event is worth 20 points per tier: Cub 20, Gazelle 40, Leopard 60, Lion 80, Mamba 100.</li>
@@ -518,7 +86,6 @@
             <li>Incline bench: controlled lower, full lockout, and no excessive bounce. Dumbbell scores use combined dumbbell weight.</li>
             <li>Pull-ups: dead hang to chin clearly over bar. No kipping.</li>
             <li>Dead-bar hang: full grip, feet off ground, no touching down.</li>
-            <li>Farmer hold: stand tall, no resting on legs, ends when one bell touches down.</li>
             <li>40-yard dash: standing start, full 40 yards, fastest clean time counts.</li>
             <li>Run / row: No stopping the clock until the event is complete.</li>
 
@@ -527,7 +94,7 @@
 
         <section class="card">
           <h2>Run Route</h2>
-          <img src="CLDJ route.png" alt="1.64-mile run route just south of the soccer field and NEX" class="route-img" />
+          <img src="assets/images/CLDJ route.png" alt="1.64-mile run route just south of the soccer field and NEX" class="route-img" />
           <p class="route-caption">Start at the marked start/finish point, run to the turnaround point, then return to start. That out-and-back is 0.82 miles total. Repeat the same out-and-back one more time for 1.64 miles total. The route is just south of the soccer field/NEX.</p>
         </section>
       </div>
@@ -547,8 +114,16 @@
             <li>Squat and incline bench score value = lift divided by allometric bodyweight.</li>
             <li>Pull-up / hang score value = actual result x (bodyweight + added weight) divided by allometric bodyweight.</li>
           </ol>
+          <p class="source-note">Research basis: Folland, McCauley, and Williams recommend allometric scaling for comparing strength measures across body sizes in <a href="https://doi.org/10.1007/s00421-007-0654-x" target="_blank" rel="noopener noreferrer">European Journal of Applied Physiology, 2008</a>.</p>
         </section>
-        <section class="card">
+        <section class="card standards-switch-card">
+          <h2>Standards Table</h2>
+          <div class="segmented-control" role="tablist" aria-label="Standards sex selector">
+            <button class="segment-btn active" type="button" data-standard-panel="male" role="tab" aria-selected="true">Men</button>
+            <button class="segment-btn" type="button" data-standard-panel="female" role="tab" aria-selected="false">Women</button>
+          </div>
+        </section>
+        <section class="card standards-panel active" id="standards-male" data-standard-panel="male">
           <h2>Male Tier Table</h2>
           <p class="small">Points by tier: Cub = 20, Gazelle = 40, Leopard = 60, Lion = 80, Mamba = 100</p>
           <div class="table-wrap">
@@ -589,14 +164,6 @@
                   <td>18</td>
                 </tr>
                 <tr>
-                  <td>Farmer Hold (sec)</td>
-                  <td>15</td>
-                  <td>35</td>
-                  <td>60</td>
-                  <td>85</td>
-                  <td>120</td>
-                </tr>
-                <tr>
                   <td>40-Yard Dash</td>
                   <td>6.50</td>
                   <td>5.80</td>
@@ -625,7 +192,7 @@
           </div>
         </section>
 
-        <section class="card">
+        <section class="card standards-panel" id="standards-female" data-standard-panel="female" hidden>
           <h2>Female Tier Table</h2>
           <p class="small">Points by tier: Cub = 20, Gazelle = 40, Leopard = 60, Lion = 80, Mamba = 100</p>
           <div class="table-wrap">
@@ -666,14 +233,6 @@
                   <td>110</td>
                 </tr>
                 <tr>
-                  <td>Farmer Hold (sec)</td>
-                  <td>15</td>
-                  <td>35</td>
-                  <td>65</td>
-                  <td>90</td>
-                  <td>125</td>
-                </tr>
-                <tr>
                   <td>40-Yard Dash</td>
                   <td>7.20</td>
                   <td>6.50</td>
@@ -708,10 +267,32 @@
       <div class="grid">
         <section class="card">
           <h2>Leaderboard</h2>
-          <p class="small">Missing events count as zero until a PR is uploaded. Event-specific leaderboards are listed below the overall Heat Index rankings.</p>
-          <p class="small">Overall leaderboard ranks by total Heat Index. Event leaderboards rank by event points.</p>
+          <p class="small">Missing events count as zero until a PR is uploaded. Use the filters to switch between overall and event rankings.</p>
+          <p class="small">Overall ranks by total Heat Index. Event views rank by event points.</p>
           <p class="small" id="leaderboardUpdatedAt">Last updated: loading...</p>
-          <div id="leaderboardContent" class="table-wrap">
+          <div class="control-bar" aria-label="Leaderboard filters">
+            <div class="control-field">
+              <label for="leaderboardView">View</label>
+              <select id="leaderboardView">
+                <option value="overall">Overall Heat Index</option>
+                <option value="squat">Squat 3RM</option>
+                <option value="bench">Incline Bench 3RM</option>
+                <option value="eventThree">Pull-Ups / Hang</option>
+                <option value="dash">40-Yard Dash</option>
+                <option value="cardio">Run / Row</option>
+              </select>
+            </div>
+            <div class="control-field">
+              <label for="leaderboardSex">Division</label>
+              <select id="leaderboardSex">
+                <option value="all">All</option>
+                <option value="male">Men</option>
+                <option value="female">Women</option>
+              </select>
+            </div>
+          </div>
+          <p class="small" id="leaderboardSummary">Showing overall Heat Index rankings.</p>
+          <div id="leaderboardContent" class="leaderboard-output">
             <p class="small">Add your Firebase config in the script block to enable the live leaderboard.</p>
           </div>
         </section>
@@ -724,7 +305,7 @@
           <p class="champion-kicker">April Champion</p>
           <h2 class="champion-title">Jermaine Harris</h2>
           <p class="champion-subtitle">Mambra Prime. King of the Heat.</p>
-          <img src="Jermaine_Mamba_Prime.jpg" alt="Jermaine Harris, April Heat Index champion" class="champion-photo" />
+          <img src="assets/images/Jermaine_Mamba_Prime.jpg" alt="Jermaine Harris, April Heat Index champion" class="champion-photo" />
           <div class="champion-stats">
             <div class="champion-stat">
               <strong>April</strong>
@@ -749,115 +330,126 @@
     </div>
 
     <div id="page-calculator" class="page">
-      <div class="grid">
-      <section class="card">
-        <h2>Athlete Inputs</h2>
-
-        <div class="row">
-          <div class="field">
-            <label for="lastName">Last Name</label>
-            <select id="lastName">
-              <option value="">Select your last name</option>
-              <option value="Aring">Aring</option>
-              <option value="Corbin">Corbin</option>
-              <option value="Cowan">Cowan</option>
-              <option value="Dsouza">Dsouza</option>
-              <option value="Harris">Harris</option>
-              <option value="Hernandez">Hernandez</option>
-              <option value="Mahrlig">Mahrlig</option>
-              <option value="Manley">Manley</option>
-              <option value="Martindale">Martindale</option>
-              <option value="Milner">Milner</option>
-              <option value="Naginis">Naginis</option>
-              <option value="Ortiz">Ortiz</option>
-              <option value="Palmer">Palmer</option>
-              <option value="Rohrer">Rohrer</option>
-              <option value="Semon">Semon</option>
-              <option value="Snyder">Snyder</option>
-              <option value="Stewart">Stewart</option>
-              <option value="Wei">Wei</option>
-              <option value="Wolt">Wolt</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="sex">Sex</label>
-            <select id="sex" disabled>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
-          </div>
+      <div class="calculator-layout">
+      <section class="score-entry">
+        <div class="section-heading">
+          <h2>Athlete Inputs</h2>
+          <p class="small">Enter the PRs you want to preview or upload.</p>
         </div>
 
-        <div class="row">
-          <div class="field">
-            <label for="bodyweight">Bodyweight (lb)</label>
-            <input id="bodyweight" type="number" min="1" step="0.1" placeholder="155" />
-          </div>
-          <div class="field">
-            <label for="bench">Incline Bench 3RM (lb)</label>
-            <input id="bench" type="number" min="0" step="1" placeholder="205" />
-            <div class="small">Women may enter total dumbbell load.</div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="field">
-            <label for="squat">Squat 3RM (lb)</label>
-            <input id="squat" type="number" min="0" step="1" placeholder="275" />
-          </div>
-          <div class="field">
-            <label for="pullups">Pull-Ups / Hang</label>
-            <input id="pullups" type="number" min="0" step="1" placeholder="12" />
-            <div class="small">Men: strict reps | Women: dead-bar hang time</div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="field">
-            <label for="eventThreeWeight">Pull-Up / Hang Added Weight (lb)</label>
-            <input id="eventThreeWeight" type="number" min="0" step="1" placeholder="0" />
-            <div class="small">Optional. Added load counts in allometric pull-up / hang scoring.</div>
-          </div>
-          <div class="field">
-            <label for="carry">Farmer Hold Time (sec)</label>
-            <input id="carry" type="number" min="0" step="1" placeholder="75" />
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="field">
-            <label for="dashSec">40-Yard Dash Time (sec)</label>
-            <input id="dashSec" type="number" min="0" step="0.01" placeholder="5.25" />
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="field">
-            <label for="mileMin">1.64-Mile Run Time</label>
+        <div class="form-groups">
+          <section class="form-panel">
+            <h3>Profile</h3>
             <div class="row">
-              <div class="field" style="margin-bottom:0;">
-                <input id="mileMin" type="number" min="0" step="1" placeholder="10" />
-                <label class="small">Minutes</label>
+              <div class="field">
+                <label for="lastName">Last Name</label>
+                <select id="lastName">
+                  <option value="">Select your last name</option>
+                  <option value="Aring">Aring</option>
+                  <option value="Corbin">Corbin</option>
+                  <option value="Cowan">Cowan</option>
+                  <option value="Dsouza">Dsouza</option>
+                  <option value="Harris">Harris</option>
+                  <option value="Hernandez">Hernandez</option>
+                  <option value="Mahrlig">Mahrlig</option>
+                  <option value="Manley">Manley</option>
+                  <option value="Martindale">Martindale</option>
+                  <option value="Milner">Milner</option>
+                  <option value="Naginis">Naginis</option>
+                  <option value="Ortiz">Ortiz</option>
+                  <option value="Palmer">Palmer</option>
+                  <option value="Rohrer">Rohrer</option>
+                  <option value="Semon">Semon</option>
+                  <option value="Snyder">Snyder</option>
+                  <option value="Stewart">Stewart</option>
+                  <option value="Wei">Wei</option>
+                  <option value="Wolt">Wolt</option>
+                </select>
               </div>
-              <div class="field" style="margin-bottom:0;">
-                <input id="mileSec" type="number" min="0" max="59" step="1" placeholder="45" />
-                <label class="small">Seconds</label>
+              <div class="field">
+                <label for="sex">Sex</label>
+                <select id="sex" disabled>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
               </div>
             </div>
-          </div>
-          <div class="field">
-            <label for="rowMin">2000m Row Time</label>
+            <div class="field field-tight">
+              <label for="bodyweight">Bodyweight (lb)</label>
+              <input id="bodyweight" type="number" min="1" step="0.1" placeholder="155" />
+            </div>
+          </section>
+
+          <section class="form-panel">
+            <h3>Strength</h3>
             <div class="row">
-              <div class="field" style="margin-bottom:0;">
-                <input id="rowMin" type="number" min="0" step="1" placeholder="8" />
-                <label class="small">Minutes</label>
+              <div class="field">
+                <label for="squat">Squat 3RM (lb)</label>
+                <input id="squat" type="number" min="0" step="1" placeholder="275" />
               </div>
-              <div class="field" style="margin-bottom:0;">
-                <input id="rowSec" type="number" min="0" max="59" step="1" placeholder="50" />
-                <label class="small">Seconds</label>
+              <div class="field">
+                <label for="bench">Incline Bench 3RM (lb)</label>
+                <input id="bench" type="number" min="0" step="1" placeholder="205" />
+                <div class="small">Women may enter total dumbbell load.</div>
               </div>
             </div>
-          </div>
+          </section>
+
+          <section class="form-panel">
+            <h3>Pull-Ups / Hang</h3>
+            <div class="row">
+              <div class="field">
+                <label for="pullups">Reps / Seconds</label>
+                <input id="pullups" type="number" min="0" step="1" placeholder="12" />
+                <div class="small">Men: strict reps | Women: dead-bar hang time</div>
+              </div>
+              <div class="field">
+                <label for="eventThreeWeight">Added Weight (lb)</label>
+                <input id="eventThreeWeight" type="number" min="0" step="1" placeholder="0" />
+                <div class="small">Optional added load.</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-panel">
+            <h3>Speed</h3>
+            <div class="field field-tight">
+              <label for="dashSec">40-Yard Dash Time (sec)</label>
+              <input id="dashSec" type="number" min="0" step="0.01" placeholder="5.25" />
+            </div>
+          </section>
+
+          <section class="form-panel">
+            <h3>Conditioning</h3>
+            <div class="row">
+              <div class="field">
+                <label for="mileMin">1.64-Mile Run Time</label>
+                <div class="time-row">
+                  <div class="field mini-field">
+                    <input id="mileMin" type="number" min="0" step="1" placeholder="10" />
+                    <label class="small">Minutes</label>
+                  </div>
+                  <div class="field mini-field">
+                    <input id="mileSec" type="number" min="0" max="59" step="1" placeholder="45" />
+                    <label class="small">Seconds</label>
+                  </div>
+                </div>
+              </div>
+              <div class="field">
+                <label for="rowMin">2000m Row Time</label>
+                <div class="time-row">
+                  <div class="field mini-field">
+                    <input id="rowMin" type="number" min="0" step="1" placeholder="8" />
+                    <label class="small">Minutes</label>
+                  </div>
+                  <div class="field mini-field">
+                    <input id="rowSec" type="number" min="0" max="59" step="1" placeholder="50" />
+                    <label class="small">Seconds</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
 
         <div class="btn-row">
@@ -873,7 +465,7 @@
         </p>
       </section>
 
-      <section class="card">
+      <section class="score-summary-panel">
         <h2>Score Summary</h2>
 
         <div class="summary">
@@ -884,7 +476,7 @@
           </div>
         </div>
 
-        <div class="results" style="margin-top:14px;">
+        <div class="results">
           <div class="result-item">
             <div class="result-top">
               <div class="result-title">Squat</div>
@@ -914,15 +506,6 @@
 
           <div class="result-item">
             <div class="result-top">
-              <div class="result-title">Farmer Hold</div>
-              <div class="result-score" id="carryScore">0.0</div>
-            </div>
-            <div class="bar"><div class="bar-fill" id="carryBar"></div></div>
-            <div class="small" id="carryMeta">Men: 2 x 24 kg / 53 lb, Women: 2 x 16 kg / 35 lb</div>
-          </div>
-
-          <div class="result-item">
-            <div class="result-top">
               <div class="result-title">40-Yard Dash</div>
               <div class="result-score" id="dashScore">0.0</div>
             </div>
@@ -940,685 +523,17 @@
           </div>
         </div>
       </section>
+      <div class="mobile-score-dock" aria-live="polite">
+        <span>Heat Index</span>
+        <strong id="mobileTotalScore">0.0</strong>
+        <span id="mobileCardioBadge">Cardio: —</span>
+      </div>
       </div>
     </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script>
-    const POINT_ANCHORS = [20, 40, 60, 80, 100];
-    const EVENT_COUNT = 6;
-    const STRENGTH_SCALING = {
-      exponent: 0.67,
-      referenceBodyweight: {
-        male: 180,
-        female: 140
-      }
-    };
-
-    const TABLES = {
-      male: {
-        squatRatio: [0.65, 0.95, 1.25, 1.50, 1.75],
-        benchRatio: [0.55, 0.80, 1.05, 1.25, 1.45],
-        eventThree: [1, 5, 10, 14, 18],
-        carrySec: [15, 35, 60, 85, 120],
-        dashSec: [6.5, 5.8, 5.2, 4.8, 4.5],
-        runSec: [960, 825, 705, 615, 540],
-        rowSec: [675, 545, 470, 425, 390]
-      },
-      female: {
-        squatRatio: [0.50, 0.75, 1.00, 1.20, 1.45],
-        benchRatio: [0.30, 0.50, 0.70, 0.85, 1.00],
-        eventThree: [10, 25, 50, 75, 110],
-        carrySec: [15, 35, 65, 90, 125],
-        dashSec: [7.2, 6.5, 5.9, 5.5, 5.1],
-        runSec: [1080, 915, 780, 690, 615],
-        rowSec: [780, 645, 555, 500, 460]
-      }
-    };
-
-    const SEX_BY_LAST_NAME = {
-      Snyder: "female",
-      Mahrlig: "female"
-    };
-
-    function getSexForLastName(lastName) {
-      return SEX_BY_LAST_NAME[lastName] || "male";
-    }
-
-    const FIREBASE_CONFIG = {
-      apiKey: "AIzaSyArKbnGgpccWyBqK9jfU3s9l09Kw8h_rZI",
-      authDomain: "heat-index-bfb8d.firebaseapp.com",
-      projectId: "heat-index-bfb8d",
-      storageBucket: "heat-index-bfb8d.firebasestorage.app",
-      messagingSenderId: "366708033551",
-      appId: "1:366708033551:web:a60f236a34c0a1c6d77b7a"
-    };
-
-    const HAS_FIREBASE_CONFIG = FIREBASE_CONFIG.apiKey !== "PASTE_YOUR_API_KEY";
-    let db = null;
-    if (HAS_FIREBASE_CONFIG) {
-      firebase.initializeApp(FIREBASE_CONFIG);
-      db = firebase.firestore();
-    }
-
-    function parseOptionalNumber(value) {
-      if (value === "" || value === null || value === undefined) return null;
-      const parsed = parseFloat(value);
-      return Number.isNaN(parsed) ? null : parsed;
-    }
-
-    function getReferenceBodyweight(sex) {
-      return STRENGTH_SCALING.referenceBodyweight[sex] || STRENGTH_SCALING.referenceBodyweight.male;
-    }
-
-    function computeAllometricBodyweight(bodyweight, sex) {
-      const referenceBodyweight = getReferenceBodyweight(sex);
-      const safeBodyweight = bodyweight !== null && bodyweight > 0 ? bodyweight : referenceBodyweight;
-      return Math.pow(safeBodyweight, STRENGTH_SCALING.exponent) *
-        Math.pow(referenceBodyweight, 1 - STRENGTH_SCALING.exponent);
-    }
-
-    function computeAllometricLiftRatio(lift, bodyweight, sex) {
-      if (!(lift > 0) || !(bodyweight > 0)) return null;
-      return lift / computeAllometricBodyweight(bodyweight, sex);
-    }
-
-    function computeEventThreeAllometric(rawValue, bodyweight, addedWeight, sex) {
-      if (rawValue === null) {
-        return {
-          adjustedValue: null,
-          loadFactor: 1,
-          totalLoad: null,
-          bodyweightUsed: null,
-          addedWeight: 0,
-          usedReferenceBodyweight: false
-        };
-      }
-
-      const referenceBodyweight = getReferenceBodyweight(sex);
-      const bodyweightUsed = bodyweight !== null && bodyweight > 0 ? bodyweight : referenceBodyweight;
-      const safeAddedWeight = addedWeight !== null && addedWeight > 0 ? addedWeight : 0;
-      const allometricBodyweight = computeAllometricBodyweight(bodyweightUsed, sex);
-      const totalLoad = bodyweightUsed + safeAddedWeight;
-      const loadFactor = totalLoad / allometricBodyweight;
-
-      return {
-        adjustedValue: rawValue * loadFactor,
-        loadFactor,
-        totalLoad,
-        bodyweightUsed,
-        addedWeight: safeAddedWeight,
-        usedReferenceBodyweight: !(bodyweight !== null && bodyweight > 0)
-      };
-    }
-
-    function computeScoresFromValues(values) {
-      const sex = values.sex || "male";
-      const table = TABLES[sex] || TABLES.male;
-      const bw = parseOptionalNumber(values.bodyweight);
-      const squat = parseOptionalNumber(values.squat);
-      const bench = parseOptionalNumber(values.bench);
-      const eventThreeRaw = parseOptionalNumber(values.pullups);
-      const eventThreeWeight = parseOptionalNumber(values.eventThreeWeight);
-      const carry = parseOptionalNumber(values.carry);
-      const dashSec = parseOptionalNumber(values.dashSec);
-      const mileMin = parseOptionalNumber(values.mileMin);
-      const mileSec = parseOptionalNumber(values.mileSec);
-      const rowMin = parseOptionalNumber(values.rowMin);
-      const rowSec = parseOptionalNumber(values.rowSec);
-
-      const squatRatio = computeAllometricLiftRatio(squat, bw, sex);
-      const benchRatio = computeAllometricLiftRatio(bench, bw, sex);
-      const eventThreeValue = eventThreeRaw !== null && eventThreeRaw >= 0 ? eventThreeRaw : null;
-      const eventThreeAllometric = computeEventThreeAllometric(eventThreeValue, bw, eventThreeWeight, sex);
-      const mileTotalSec = (mileMin !== null && mileSec !== null) ? (mileMin * 60 + mileSec) : null;
-      const rowTotalSec = (rowMin !== null && rowSec !== null) ? (rowMin * 60 + rowSec) : null;
-
-      const squatScore = squatRatio ? interpolateScore(squatRatio, table.squatRatio, true) : 0;
-      const benchScore = benchRatio ? interpolateScore(benchRatio, table.benchRatio, true) : 0;
-      const eventThreeScore = eventThreeAllometric.adjustedValue !== null
-        ? interpolateScore(eventThreeAllometric.adjustedValue, table.eventThree, true)
-        : 0;
-      const carryScore = carry ? interpolateScore(carry, table.carrySec, true) : 0;
-      const dashScore = dashSec ? interpolateScore(-dashSec, table.dashSec.map(v => -v), true) : 0;
-      const runScore = mileTotalSec ? interpolateScore(-mileTotalSec, table.runSec.map(v => -v), true) : 0;
-      const rowScore = rowTotalSec ? interpolateScore(-rowTotalSec, table.rowSec.map(v => -v), true) : 0;
-      const mileScore = Math.max(runScore, rowScore);
-      const conditioningMode = mileScore === 0 ? null : (runScore >= rowScore ? "run" : "row");
-
-      const totalScore = (
-        squatScore +
-        benchScore +
-        eventThreeScore +
-        carryScore +
-        dashScore +
-        mileScore
-      ) / EVENT_COUNT;
-
-      return {
-        squatScore,
-        benchScore,
-        eventThreeScore,
-        carryScore,
-        dashScore,
-        mileScore,
-        totalScore,
-        squatRatio,
-        benchRatio,
-        eventThreeValue,
-        eventThreeAdjustedValue: eventThreeAllometric.adjustedValue,
-        eventThreeLoadFactor: eventThreeAllometric.loadFactor,
-        eventThreeTotalLoad: eventThreeAllometric.totalLoad,
-        eventThreeBodyweightUsed: eventThreeAllometric.bodyweightUsed,
-        eventThreeAddedWeight: eventThreeAllometric.addedWeight,
-        eventThreeUsedReferenceBodyweight: eventThreeAllometric.usedReferenceBodyweight,
-        dashSec,
-        mileTotalSec,
-        rowTotalSec,
-        runScore,
-        rowScore,
-        conditioningMode
-      };
-    }
-
-    function clamp(value, min, max) {
-      return Math.min(Math.max(value, min), max);
-    }
-
-    function round1(value) {
-      return Math.round(value * 10) / 10;
-    }
-
-    function formatTime(totalSec) {
-      const min = Math.floor(totalSec / 60);
-      const sec = Math.round(totalSec % 60);
-      return `${min}:${String(sec).padStart(2, "0")}`;
-    }
-
-    function formatEventThreeMeta(scores, sex) {
-      const rawLabel = sex === "male"
-        ? `Strict reps: ${scores.eventThreeValue}`
-        : `Dead-bar hang: ${scores.eventThreeValue} sec`;
-
-      if (scores.eventThreeAdjustedValue === null) {
-        return rawLabel;
-      }
-
-      const adjustedLabel = sex === "male"
-        ? `${round1(scores.eventThreeAdjustedValue)} scaled reps`
-        : `${round1(scores.eventThreeAdjustedValue)} scaled sec`;
-      const addedLabel = scores.eventThreeAddedWeight > 0 ? `, +${scores.eventThreeAddedWeight} lb` : "";
-      const referenceLabel = scores.eventThreeUsedReferenceBodyweight ? " using reference BW" : "";
-      return `${rawLabel} | ${adjustedLabel} (${Math.round(scores.eventThreeTotalLoad)} lb load${addedLabel}${referenceLabel})`;
-    }
-
-    function rankBadge(index) {
-      if (index === 0) return '<span class="place-badge place-gold">1</span>';
-      if (index === 1) return '<span class="place-badge place-silver">2</span>';
-      if (index === 2) return '<span class="place-badge place-bronze">3</span>';
-      return `${index + 1}`;
-    }
-
-    function interpolateScore(value, thresholds, higherIsBetter = true) {
-      if (value === null || Number.isNaN(value)) return 0;
-
-      const t = higherIsBetter ? thresholds : [...thresholds].reverse();
-      const p = higherIsBetter ? POINT_ANCHORS : [...POINT_ANCHORS].reverse();
-      const v = higherIsBetter ? value : -value;
-      const tv = higherIsBetter ? t : t.map(x => -x);
-
-      if (v <= tv[0]) {
-        const slope = (p[1] - p[0]) / (tv[1] - tv[0]);
-        return Math.max(0, p[0] + (v - tv[0]) * slope);
-      }
-
-      for (let i = 0; i < tv.length - 1; i++) {
-        if (v >= tv[i] && v <= tv[i + 1]) {
-          const slope = (p[i + 1] - p[i]) / (tv[i + 1] - tv[i]);
-          return p[i] + (v - tv[i]) * slope;
-        }
-      }
-
-      const last = tv.length - 1;
-      const slope = (p[last] - p[last - 1]) / (tv[last] - tv[last - 1]);
-      return p[last] + (v - tv[last]) * slope;
-    }
-
-    function updateBar(id, score) {
-      const width = clamp(score, 0, 120);
-      document.getElementById(id).style.width = `${(width / 120) * 100}%`;
-    }
-
-    function calculateScore() {
-      const sex = document.getElementById("sex").value;
-      const bw = parseFloat(document.getElementById("bodyweight").value);
-      const squat = parseFloat(document.getElementById("squat").value);
-      const bench = parseFloat(document.getElementById("bench").value);
-      const eventThreeRaw = parseFloat(document.getElementById("pullups").value);
-      const eventThreeWeight = parseFloat(document.getElementById("eventThreeWeight").value);
-      const carry = parseFloat(document.getElementById("carry").value);
-      const dashSec = parseFloat(document.getElementById("dashSec").value);
-      const mileMin = parseFloat(document.getElementById("mileMin").value);
-      const mileSec = parseFloat(document.getElementById("mileSec").value);
-      const rowMin = parseFloat(document.getElementById("rowMin").value);
-      const rowSec = parseFloat(document.getElementById("rowSec").value);
-
-      const scores = computeScoresFromValues({
-        sex,
-        bodyweight: bw,
-        squat,
-        bench,
-        pullups: eventThreeRaw,
-        eventThreeWeight,
-        carry,
-        dashSec,
-        mileMin,
-        mileSec,
-        rowMin,
-        rowSec
-      });
-
-      document.getElementById("squatScore").textContent = round1(scores.squatScore);
-      document.getElementById("benchScore").textContent = round1(scores.benchScore);
-      document.getElementById("eventThreeScore").textContent = round1(scores.eventThreeScore);
-      document.getElementById("carryScore").textContent = round1(scores.carryScore);
-      document.getElementById("dashScore").textContent = round1(scores.dashScore);
-      document.getElementById("mileScore").textContent = round1(scores.mileScore);
-      document.getElementById("totalScore").textContent = round1(scores.totalScore);
-
-      document.getElementById("eventThreeTitle").textContent = "Pull-Ups / Dead-Bar Hang";
-
-      document.getElementById("squatMeta").textContent =
-        scores.squatRatio ? `Scaled ratio: ${scores.squatRatio.toFixed(2)}` : "Enter squat and bodyweight";
-
-      document.getElementById("benchMeta").textContent =
-        scores.benchRatio ? `Scaled ratio: ${scores.benchRatio.toFixed(2)}` : "Enter incline bench and bodyweight";
-
-      document.getElementById("eventThreeMeta").textContent =
-        scores.eventThreeValue !== null
-          ? formatEventThreeMeta(scores, sex)
-          : "Men: pull-ups. Women: dead-bar hang.";
-
-      document.getElementById("carryMeta").textContent =
-        carry ? `Hold time: ${carry} sec` : (sex === "male" ? "Men: 2 x 24 kg / 53 lb" : "Women: 2 x 16 kg / 35 lb");
-
-      document.getElementById("dashMeta").textContent =
-        scores.dashSec ? `Dash time: ${scores.dashSec.toFixed(2)} sec` : "Enter a 40-yard dash time.";
-
-      document.getElementById("mileMeta").textContent =
-        scores.conditioningMode === "run"
-          ? `Using run: ${formatTime(scores.mileTotalSec)} (${round1(scores.runScore)} pts)`
-          : scores.conditioningMode === "row"
-            ? `Using row: ${formatTime(scores.rowTotalSec)} (${round1(scores.rowScore)} pts)`
-            : "Enter a 1.64-mile run time, a 2000m row time, or both.";
-
-      document.getElementById("cardioBadge").textContent =
-        scores.conditioningMode === "run"
-          ? "Cardio used: Run"
-          : scores.conditioningMode === "row"
-            ? "Cardio used: Row"
-            : "Cardio used: —";
-
-      updateBar("squatBar", scores.squatScore);
-      updateBar("benchBar", scores.benchScore);
-      updateBar("eventThreeBar", scores.eventThreeScore);
-      updateBar("carryBar", scores.carryScore);
-      updateBar("dashBar", scores.dashScore);
-      updateBar("mileBar", scores.mileScore);
-    }
-
-    function getFormData() {
-      return {
-        lastName: document.getElementById("lastName").value,
-        sex: document.getElementById("sex").value,
-        bodyweight: document.getElementById("bodyweight").value,
-        squat: document.getElementById("squat").value,
-        bench: document.getElementById("bench").value,
-        pullups: document.getElementById("pullups").value,
-        eventThreeWeight: document.getElementById("eventThreeWeight").value,
-        carry: document.getElementById("carry").value,
-        dashSec: document.getElementById("dashSec").value,
-        mileMin: document.getElementById("mileMin").value,
-        mileSec: document.getElementById("mileSec").value,
-        rowMin: document.getElementById("rowMin").value,
-        rowSec: document.getElementById("rowSec").value
-      };
-    }
-
-    function setFormData(data) {
-      if (!data) return;
-      document.getElementById("lastName").value = data.lastName || "";
-      document.getElementById("sex").value = data.lastName ? getSexForLastName(data.lastName) : (data.sex || "male");
-      document.getElementById("bodyweight").value = data.bodyweight || "";
-      document.getElementById("squat").value = data.squat || "";
-      document.getElementById("bench").value = data.bench || "";
-      document.getElementById("pullups").value = data.pullups || "";
-      document.getElementById("eventThreeWeight").value = data.eventThreeWeight || "";
-      document.getElementById("carry").value = data.carry || "";
-      document.getElementById("dashSec").value = data.dashSec || "";
-      document.getElementById("mileMin").value = data.mileMin || "";
-      document.getElementById("mileSec").value = data.mileSec || "";
-      document.getElementById("rowMin").value = data.rowMin || "";
-      document.getElementById("rowSec").value = data.rowSec || "";
-    }
-
-    function saveToLocal() {
-      localStorage.setItem("heatIndexForm", JSON.stringify(getFormData()));
-      alert("Saved locally on this device.");
-    }
-
-    async function uploadPRs() {
-      if (!HAS_FIREBASE_CONFIG || !db) {
-        alert("Add your Firebase config in index.html first.");
-        return;
-      }
-
-      const lastName = document.getElementById("lastName").value.trim();
-      if (!lastName) {
-        alert("Select your last name before uploading.");
-        return;
-      }
-
-      const formData = getFormData();
-      const hasRunMin = formData.mileMin !== "";
-      const hasRunSec = formData.mileSec !== "";
-      const hasRowMin = formData.rowMin !== "";
-      const hasRowSec = formData.rowSec !== "";
-
-      if (hasRunMin !== hasRunSec) {
-        alert("Enter both run minutes and run seconds, or leave both blank.");
-        return;
-      }
-
-      if (hasRowMin !== hasRowSec) {
-        alert("Enter both row minutes and row seconds, or leave both blank.");
-        return;
-      }
-
-      try {
-        const docRef = db.collection("heatIndexPRs").doc(lastName.toLowerCase());
-        const snapshot = await docRef.get();
-        const existing = snapshot.exists ? snapshot.data() : {};
-
-        const updates = {
-          lastName,
-          sex: getSexForLastName(lastName),
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
-
-        ["bodyweight", "squat", "bench", "pullups", "eventThreeWeight", "carry", "dashSec", "mileMin", "mileSec", "rowMin", "rowSec"].forEach((key) => {
-          if (formData[key] !== "") {
-            updates[key] = formData[key];
-          }
-        });
-
-        const merged = { ...existing, ...updates };
-        const scores = computeScoresFromValues(merged);
-        updates.totalScore = round1(scores.totalScore);
-
-        await docRef.set(updates, { merge: true });
-        alert(`Uploaded PRs for ${lastName}.`);
-        loadLeaderboard();
-      } catch (error) {
-        console.error("Upload PRs failed:", error);
-        alert(`Upload failed: ${error.code || "unknown_error"}${error.message ? ` - ${error.message}` : ""}`);
-      }
-    }
-
-    async function loadLeaderboard() {
-      const container = document.getElementById("leaderboardContent");
-      if (!container) return;
-
-      const updatedEl = document.getElementById("leaderboardUpdatedAt");
-
-      if (!HAS_FIREBASE_CONFIG || !db) {
-        if (updatedEl) updatedEl.textContent = "Last updated: Firebase not connected";
-        container.innerHTML = '<p class="small">Add your Firebase config in the script block to enable the live leaderboard.</p>';
-        return;
-      }
-
-      const snapshot = await db.collection("heatIndexPRs").get();
-      const rows = [];
-
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const scores = computeScoresFromValues(data);
-
-        const bodyweight = parseOptionalNumber(data.bodyweight);
-        const squat = parseOptionalNumber(data.squat);
-        const bench = parseOptionalNumber(data.bench);
-        const eventThree = parseOptionalNumber(data.pullups);
-        const eventThreeWeight = parseOptionalNumber(data.eventThreeWeight);
-        const carry = parseOptionalNumber(data.carry);
-        const dashSec = parseOptionalNumber(data.dashSec);
-        const mileMin = parseOptionalNumber(data.mileMin);
-        const mileSec = parseOptionalNumber(data.mileSec);
-        const rowMin = parseOptionalNumber(data.rowMin);
-        const rowSec = parseOptionalNumber(data.rowSec);
-        const mileTotalSec = (mileMin !== null && mileSec !== null) ? (mileMin * 60 + mileSec) : null;
-        const rowTotalSec = (rowMin !== null && rowSec !== null) ? (rowMin * 60 + rowSec) : null;
-
-        rows.push({
-          lastName: data.lastName || doc.id,
-          totalScore: round1(scores.totalScore),
-          sex: data.sex || "male",
-          updatedAt: data.updatedAt && data.updatedAt.toDate ? data.updatedAt.toDate() : null,
-          squatRaw: (squat !== null && bodyweight > 0) ? `${squat} lb (${scores.squatRatio.toFixed(2)} scaled)` : "-",
-          squatScore: round1(scores.squatScore),
-          squatValue: scores.squatRatio !== null ? scores.squatRatio : null,
-          benchRaw: (bench !== null && bodyweight > 0) ? `${bench} lb (${scores.benchRatio.toFixed(2)} scaled)` : "-",
-          benchScore: round1(scores.benchScore),
-          benchValue: scores.benchRatio !== null ? scores.benchRatio : null,
-          eventThreeRaw: eventThree !== null
-            ? formatEventThreeMeta(scores, data.sex || "male")
-            : "-",
-          eventThreeScore: round1(scores.eventThreeScore),
-          eventThreeValue: scores.eventThreeAdjustedValue !== null ? scores.eventThreeAdjustedValue : null,
-          eventThreeWeight: eventThreeWeight !== null ? eventThreeWeight : null,
-          carryRaw: carry !== null ? `${carry} sec` : "-",
-          carryScore: round1(scores.carryScore),
-          carryValue: carry !== null ? carry : null,
-          dashRaw: dashSec !== null ? `${dashSec.toFixed(2)} sec` : "-",
-          dashScore: round1(scores.dashScore),
-          dashValue: dashSec !== null ? dashSec : null,
-          cardioMode: scores.conditioningMode === "run"
-            ? "Run"
-            : scores.conditioningMode === "row"
-              ? "Row"
-              : "-",
-          mileRaw: scores.conditioningMode === "run"
-            ? formatTime(mileTotalSec)
-            : scores.conditioningMode === "row"
-              ? formatTime(rowTotalSec)
-              : "-",
-          mileScore: round1(scores.mileScore),
-          mileValue: scores.mileScore > 0 ? scores.mileScore : null
-        });
-      });
-
-      rows.sort((a, b) => b.totalScore - a.totalScore);
-
-      const latestUpdate = rows.reduce((latest, row) => {
-        if (!row.updatedAt) return latest;
-        if (!latest) return row.updatedAt;
-        return row.updatedAt > latest ? row.updatedAt : latest;
-      }, null);
-
-      if (updatedEl) {
-        updatedEl.textContent = latestUpdate
-          ? `Last updated: ${latestUpdate.toLocaleString()}`
-          : "Last updated: unknown";
-      }
-
-      if (!rows.length) {
-        if (updatedEl) updatedEl.textContent = "Last updated: no PRs uploaded yet";
-        container.innerHTML = '<p class="small">No PRs uploaded yet.</p>';
-        return;
-      }
-
-      let html = `
-        <table>
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Last Name</th>
-              <th>Sex</th>
-              <th>Heat Index</th>
-              <th>Squat 3RM</th>
-              <th>Incline Bench 3RM</th>
-              <th>Pull-Ups / Hang</th>
-              <th>Farmer</th>
-              <th>40-Yard</th>
-              <th>Cardio</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
-
-      rows.forEach((row, index) => {
-        html += `
-          <tr>
-            <td>${rankBadge(index)}</td>
-            <td>${row.lastName}</td>
-            <td>${row.sex === "male" ? "M" : "F"}</td>
-            <td>${row.totalScore}</td>
-            <td>${row.squatRaw}<br><span class="small">${row.squatScore} pts</span></td>
-            <td>${row.benchRaw}<br><span class="small">${row.benchScore} pts</span></td>
-            <td>${row.eventThreeRaw}<br><span class="small">${row.eventThreeScore} pts</span></td>
-            <td>${row.carryRaw}<br><span class="small">${row.carryScore} pts</span></td>
-            <td>${row.dashRaw}<br><span class="small">${row.dashScore} pts</span></td>
-            <td>${row.cardioMode !== '-' ? row.cardioMode + ' ' : ''}${row.mileRaw}<br><span class="small">${row.mileScore} pts</span></td>
-          </tr>
-        `;
-      });
-
-      const makeEventTable = (title, valueKey, rawKey, scoreKey) => {
-        const filtered = rows.filter((row) => row[valueKey] !== null && row[valueKey] !== undefined);
-        filtered.sort((a, b) => b[scoreKey] - a[scoreKey]);
-
-        if (!filtered.length) {
-          return `
-            <section class="card">
-              <h2>${title}</h2>
-              <p class="small">No PRs uploaded yet.</p>
-            </section>
-          `;
-        }
-
-        const isCardio = title === 'Cardio Leaderboard';
-
-        let sectionHtml = `
-          <section class="card">
-            <h2>${title}</h2>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Rank</th>
-                    <th>Last Name</th>
-                    <th>Sex</th>
-                    ${isCardio ? '<th>Mode</th>' : ''}
-                    <th>Result</th>
-                    <th>Points</th>
-                  </tr>
-                </thead>
-                <tbody>
-        `;
-
-        filtered.forEach((row, index) => {
-          sectionHtml += `
-            <tr>
-              <td>${rankBadge(index)}</td>
-              <td>${row.lastName}</td>
-              <td>${row.sex === "male" ? "M" : "F"}</td>
-              ${isCardio ? `<td>${row.cardioMode || '-'}</td>` : ''}
-              <td>${row[rawKey]}</td>
-              <td>${row[scoreKey]}</td>
-            </tr>
-          `;
-        });
-
-        sectionHtml += `
-                </tbody>
-              </table>
-            </div>
-          </section>
-        `;
-
-        return sectionHtml;
-      };
-
-      html += '</tbody></table>';
-      html += makeEventTable('Squat 3RM Leaderboard', 'squatValue', 'squatRaw', 'squatScore');
-      html += makeEventTable('Incline Bench 3RM Leaderboard', 'benchValue', 'benchRaw', 'benchScore');
-      html += makeEventTable('Pull-Ups / Dead-Bar Hang Leaderboard', 'eventThreeValue', 'eventThreeRaw', 'eventThreeScore');
-      html += makeEventTable('Farmer Hold Leaderboard', 'carryValue', 'carryRaw', 'carryScore');
-      html += makeEventTable('40-Yard Dash Leaderboard', 'dashValue', 'dashRaw', 'dashScore');
-      html += makeEventTable('Cardio Leaderboard', 'mileValue', 'mileRaw', 'mileScore');
-      container.innerHTML = html;
-    }
-
-    function loadFromLocal() {
-      const saved = localStorage.getItem("heatIndexForm");
-      if (!saved) {
-        return;
-      }
-      setFormData(JSON.parse(saved));
-      calculateScore();
-    }
-
-    function clearForm() {
-      setFormData({});
-      document.getElementById("sex").value = "male";
-      document.getElementById("lastName").value = "";
-      calculateScore();
-    }
-
-    function showPage(pageName) {
-      document.querySelectorAll(".page").forEach((page) => {
-        page.classList.remove("active");
-      });
-
-      document.querySelectorAll(".tab-btn").forEach((button) => {
-        button.classList.remove("active");
-      });
-
-      const targetPage = document.getElementById(`page-${pageName}`);
-      const targetButton = document.querySelector(`.tab-btn[data-page="${pageName}"]`);
-
-      if (targetPage) targetPage.classList.add("active");
-      if (targetButton) targetButton.classList.add("active");
-    }
-
-    document.querySelectorAll(".tab-btn").forEach((button) => {
-      button.addEventListener("click", () => {
-        showPage(button.dataset.page);
-        if (button.dataset.page === "leaderboard") {
-          loadLeaderboard();
-        }
-      });
-    });
-
-    document.getElementById("lastName").addEventListener("change", () => {
-      const lastName = document.getElementById("lastName").value;
-      document.getElementById("sex").value = getSexForLastName(lastName);
-      calculateScore();
-    });
-
-    document.getElementById("sex").addEventListener("change", () => {
-      calculateScore();
-    });
-
-    window.addEventListener("load", () => {
-      loadFromLocal();
-      const lastName = document.getElementById("lastName").value;
-      document.getElementById("sex").value = getSexForLastName(lastName);
-      calculateScore();
-      showPage("home");
-      loadLeaderboard();
-    });
-  </script>
+  <script src="src/app.js"></script>
 </body>
 </html>
