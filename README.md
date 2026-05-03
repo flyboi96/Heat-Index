@@ -4,15 +4,16 @@ A mobile-friendly fitness scoring system for tracking strength, conditioning, an
 
 ## Overview
 
-Heat Index allows users to log performance across key events, convert results into points, and track a total fitness score over time. The system rewards consistency, improvement, and well-rounded fitness.
+Heat Index allows users to log performance across key events, convert results into points, and track a total fitness score over time. The system rewards improvement and well-rounded fitness across strength, grip, speed, and conditioning.
 
 ## Events
 
-- Squat (3RM relative to bodyweight)  
-- Pull-ups (strict, with band scaling)  
-- Farmer carry (fixed weight, time)  
-- 1-mile run (time)  
-- Consistency (daily training points)  
+- Squat (3RM relative to bodyweight)
+- Incline bench (3RM relative to bodyweight; women may use dumbbells)
+- Pull-ups / dead-bar hang with optional added-load bonus
+- Farmer hold (fixed weight, time)
+- 40-yard dash
+- 1.64-mile run or 2000m row
 
 ## Features
 
@@ -29,5 +30,4 @@ Heat Index allows users to log performance across key events, convert results in
 
 ## Scoring
 
-Each event is converted into points using a tiered system (Beginner to Elite).  
-Scores reward relative strength, conditioning, and consistency across all domains.
+Each event is converted into points using a tiered system from Cub to Mamba. Scores can continue above Mamba, and the final Heat Index score is the average of all six event scores.
