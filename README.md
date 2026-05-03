@@ -16,7 +16,7 @@ Heat Index allows users to log performance across key events, convert results in
 
 ## Features
 
-- Log PRs at any time (no single test day)  
+- Log May 2026 PRs at any time (no single test day)
 - Automatic score calculation  
 - Leaderboard tracking  
 - Simple, mobile-first interface  
@@ -25,11 +25,11 @@ Heat Index allows users to log performance across key events, convert results in
 
 1. Enter bodyweight and event results
 2. Scores are calculated automatically  
-3. Update anytime — best results are retained  
+3. Update May PRs anytime — best results are retained
 
 ## Scoring
 
-Each event is converted into points using a tiered system from Cub to Mamba. Squat, incline bench, and pull-ups / hang use allometric scaling so bodyweight matters without requiring heavier athletes to perform pound-for-pound more. Scores can continue above Mamba, and the final Heat Index score is the average of all five event scores. Run and row are alternatives, but row standards are intentionally tougher to prioritize running in heat and field conditions.
+Each event is converted into points using a tiered system from Cub to Mamba. Only event scores achieved in May 2026 count. Squat, incline bench, and pull-ups / hang use allometric scaling so bodyweight matters without requiring heavier athletes to perform pound-for-pound more. Scores can continue above Mamba, and the final Heat Index score is the average of all five event scores. Run and row are alternatives, but row standards are intentionally tougher to prioritize running in heat and field conditions.
 
 ## Project Structure
 
