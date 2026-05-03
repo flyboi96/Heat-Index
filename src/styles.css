@@ -793,11 +793,20 @@ th {
     font-weight: 900;
   }
 
+  .leaderboard-overall-table td:nth-child(n+5) {
+    display: none;
+  }
+
   .leaderboard-overall-table td:nth-child(4) {
     grid-column: 1 / -1;
     color: #fbbf24;
     font-size: 1.35rem;
     font-weight: 900;
+  }
+
+  .leaderboard-event-table td:nth-child(4),
+  .leaderboard-event-table td:nth-child(5) {
+    grid-column: 1 / -1;
   }
 
   .leaderboard-event-table td:nth-child(5) {
