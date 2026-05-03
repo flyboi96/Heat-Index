@@ -8,9 +8,9 @@ Heat Index allows users to log performance across key events, convert results in
 
 ## Events
 
-- Squat (3RM relative to bodyweight)
-- Incline bench (3RM relative to bodyweight; women may use dumbbells)
-- Pull-ups / dead-bar hang with capped bodyweight and added-load bonus
+- Squat (3RM with allometric bodyweight scaling)
+- Incline bench (3RM with allometric bodyweight scaling; women may use dumbbells)
+- Pull-ups / dead-bar hang with allometric bodyweight and added-load scaling
 - Farmer hold (fixed weight, time)
 - 40-yard dash
 - 1.64-mile run or 2000m row
@@ -24,10 +24,10 @@ Heat Index allows users to log performance across key events, convert results in
 
 ## How to Use
 
-1. Enter bodyweight and event results  
+1. Enter bodyweight and event results
 2. Scores are calculated automatically  
 3. Update anytime — best results are retained  
 
 ## Scoring
 
-Each event is converted into points using a tiered system from Cub to Mamba. Scores can continue above Mamba, and the final Heat Index score is the average of all six event scores.
+Each event is converted into points using a tiered system from Cub to Mamba. Squat, incline bench, and pull-ups / hang use allometric scaling so bodyweight matters without requiring heavier athletes to perform pound-for-pound more. Scores can continue above Mamba, and the final Heat Index score is the average of all six event scores. Run and row are alternatives, but row standards are intentionally tougher to prioritize running in heat and field conditions.
