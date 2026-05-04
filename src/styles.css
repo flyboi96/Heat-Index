@@ -473,6 +473,10 @@ th {
   font-size: 0.92rem;
 }
 
+.callout p + p {
+  margin-top: 8px;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
